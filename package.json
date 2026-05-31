@@ -9,11 +9,11 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "bash scripts/with-node.sh vite dev --port 3000",
-    "build": "bash scripts/with-node.sh vite build",
-    "start": "bash scripts/with-node.sh node .output/server/index.mjs",
-    "preview": "bash scripts/with-node.sh vite preview",
-    "test": "bash scripts/with-node.sh vitest run",
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "start": "node .output/server/index.mjs",
+    "preview": "vite preview",
+    "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check"
