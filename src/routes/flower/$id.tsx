@@ -4,9 +4,20 @@ import { Droplets, Heart } from 'lucide-react'
 import { RoseScene } from '#/components/RoseScene'
 import { FLOWER_LIFESPAN_DAYS, getFlowerLifecycle } from '#/lib/flower-lifecycle'
 import type { FlowerLifecycle } from '#/lib/flower-types'
+import { roseModelUrl } from '#/lib/roseModel'
 import { getFlower } from '#/server/flowers'
 
 export const Route = createFileRoute('/flower/$id')({
+  head: () => ({
+    links: [
+      {
+        rel: 'preload',
+        href: roseModelUrl,
+        as: 'fetch',
+        crossOrigin: 'anonymous',
+      },
+    ],
+  }),
   loader: async ({ params }) => {
     const flower = await getFlower({ data: { id: params.id } })
 
@@ -71,15 +82,12 @@ function FlowerViewPage() {
       <div className="pointer-events-none absolute top-[18%] right-[12%] h-72 w-72 rounded-full bg-wine/20 blur-[130px] sm:h-96 sm:w-96" />
 
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-xl flex-col px-5 pb-28 sm:max-w-2xl sm:px-8 lg:max-w-none lg:px-12 xl:px-16">
-        <div className="relative mx-auto flex w-full max-w-xl shrink-0 items-start justify-center pt-3 sm:max-w-2xl sm:pt-5 lg:max-w-4xl xl:max-w-5xl">
-          <div className="pointer-events-none absolute left-1/2 top-[38%] h-[55%] w-[75%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,225,210,0.16)_0%,rgba(255,200,180,0.06)_40%,transparent_70%)] blur-2xl lg:max-w-2xl lg:h-[65%]" />
-          <RoseScene
-            className="relative h-[min(48dvh,420px)] w-full sm:h-[min(52dvh,480px)] md:h-[min(56dvh,560px)] lg:h-[min(64dvh,680px)] xl:h-[min(68dvh,760px)] 2xl:h-[min(72dvh,840px)]"
-            fitMargin={1.05}
-          />
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-[1] h-[80svh] px-5 pt-3 sm:px-8 lg:pointer-events-auto lg:relative lg:inset-auto lg:mx-auto lg:flex lg:h-auto lg:w-full lg:max-w-4xl lg:shrink-0 lg:items-start lg:justify-center lg:pt-5 xl:max-w-5xl">
+          <div className="pointer-events-none absolute left-1/2 top-[42%] h-[70%] w-[85%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,225,210,0.16)_0%,rgba(255,200,180,0.06)_40%,transparent_70%)] blur-2xl lg:top-[38%] lg:h-[65%] lg:w-[75%] lg:max-w-2xl" />
+          <RoseScene className="relative h-full w-full lg:h-[min(64dvh,680px)] xl:h-[min(68dvh,760px)] 2xl:h-[min(72dvh,840px)]" />
         </div>
 
-        <article className="relative z-10 mx-auto -mt-1 w-full max-w-xl rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 shadow-2xl shadow-black/40 backdrop-blur-xl sm:-mt-2 sm:max-w-2xl sm:p-9">
+        <article className="relative z-10 mx-auto mt-[calc(80svh-3.5rem)] w-full max-w-xl rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 shadow-2xl shadow-black/40 backdrop-blur-xl sm:mt-[calc(80svh-4rem)] sm:max-w-2xl sm:p-9 lg:mt-0 lg:-mt-2">
           <div className="flex items-center gap-2.5 text-gold">
             <Heart className="size-3.5 fill-gold/80 text-gold" />
             <p className="text-[11px] font-medium uppercase tracking-[0.3em]">
