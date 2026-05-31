@@ -6,6 +6,7 @@ import { Group } from 'three'
 interface RoseSceneProps {
   className?: string
   autoRotate?: boolean
+  fitMargin?: number
 }
 
 function RoseLoader() {
@@ -41,7 +42,13 @@ function RoseModel({ autoRotate }: { autoRotate: boolean }) {
   )
 }
 
-function SceneContent({ autoRotate }: { autoRotate: boolean }) {
+function SceneContent({
+  autoRotate,
+  fitMargin,
+}: {
+  autoRotate: boolean
+  fitMargin: number
+}) {
   return (
     <>
       <ambientLight intensity={0.6} />
@@ -51,7 +58,7 @@ function SceneContent({ autoRotate }: { autoRotate: boolean }) {
       <spotLight position={[0, 6, 2]} angle={0.5} penumbra={1} intensity={1.4} />
 
       <Suspense fallback={<RoseLoader />}>
-        <Bounds fit clip observe margin={1.2}>
+        <Bounds fit clip observe margin={fitMargin}>
           <RoseModel autoRotate={autoRotate} />
         </Bounds>
         <Environment preset="sunset" />
@@ -69,7 +76,11 @@ function SceneContent({ autoRotate }: { autoRotate: boolean }) {
   )
 }
 
-export function RoseScene({ className, autoRotate = true }: RoseSceneProps) {
+export function RoseScene({
+  className,
+  autoRotate = true,
+  fitMargin = 1.2,
+}: RoseSceneProps) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -96,7 +107,7 @@ export function RoseScene({ className, autoRotate = true }: RoseSceneProps) {
         style={{ width: '100%', height: '100%' }}
         camera={{ fov: 40, near: 0.01, far: 100, position: [0, 0.5, 5] }}
       >
-        <SceneContent autoRotate={autoRotate} />
+        <SceneContent autoRotate={autoRotate} fitMargin={fitMargin} />
       </Canvas>
     </div>
   )
