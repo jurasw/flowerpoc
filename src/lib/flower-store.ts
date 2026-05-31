@@ -7,7 +7,7 @@ const SEED_FLOWERS: Flower[] = [
     id: 'poc',
     senderName: 'Dominik',
     recipientName: 'Roksana',
-    quote: 'dla mojej roksanki',
+    quote: 'dla pięknej roksanki',
     createdAt: '2026-05-30T16:10:36.850Z',
   },
 ]
