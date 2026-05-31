@@ -4,7 +4,7 @@ const flowers = new Map<string, Flower>()
 
 const SEED_FLOWERS: Flower[] = [
   {
-    id: '4f058d7e-26b1-4a78-8da2-c69cc357605d',
+    id: 'poc',
     senderName: 'Dominik',
     recipientName: 'Roksana',
     quote: 'dla mojej roksanki',
