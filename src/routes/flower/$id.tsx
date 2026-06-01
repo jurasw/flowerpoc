@@ -81,13 +81,13 @@ function FlowerMessageCard({
       <div className="flex items-center gap-2.5 text-gold">
         <Heart className="size-3.5 fill-gold/80 text-gold" />
         <p className="text-[11px] font-medium uppercase tracking-[0.3em]">
-          For {flower.recipientName}
+          Dla {flower.recipientName}
         </p>
       </div>
 
       <h1 className="mt-5 font-serif text-4xl font-medium leading-[1.05] text-white sm:text-5xl">
-        A rose from{' '}
         <span className="italic text-rose-200">{flower.senderName}</span>
+        {' '} podarował Ci różę
       </h1>
 
       <div className="mt-7 h-px w-16 bg-gradient-to-r from-gold/70 to-transparent" />
