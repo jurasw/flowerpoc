@@ -2,12 +2,19 @@ import { Html, OrbitControls, useGLTF, useProgress } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Group } from 'three'
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
 import {
   fitRoseModelToViewport,
   resetRoseModelTransform,
 } from '#/lib/fitRoseModel'
-import { getRoseFrameSettings, type RoseFrameSettings } from '#/lib/roseFrame'
+import {
+  getRoseFrameSettings,
+  getRoseInitialOrientation,
+  getRoseEntranceScale,
+  roseEntranceDurationSeconds,
+  type RoseFrameSettings,
+} from '#/lib/roseFrame'
 import { roseModelUrl } from '#/lib/roseModel'
 
 export interface RoseSceneCanvasProps {
@@ -41,6 +48,9 @@ function RoseModel({
 }) {
   const { scene } = useGLTF(roseModelUrl)
   const groupRef = useRef<Group>(null)
+  const targetScaleRef = useRef(1)
+  const entranceProgressRef = useRef(0)
+  const isEntranceCompleteRef = useRef(false)
   const { viewport } = useThree()
 
   useLayoutEffect(() => {
@@ -51,14 +61,53 @@ function RoseModel({
 
     fitRoseModelToViewport(scene, group, viewport, frame)
 
+    const { leanX, leanZ, startYaw } = getRoseInitialOrientation()
+    group.rotation.set(leanX, startYaw, leanZ)
+
+    targetScaleRef.current = group.scale.x
+
+    if (isEntranceCompleteRef.current) {
+      group.scale.setScalar(targetScaleRef.current)
+    } else {
+      group.scale.setScalar(
+        getRoseEntranceScale(
+          entranceProgressRef.current,
+          targetScaleRef.current,
+        ),
+      )
+    }
+
     return () => {
       resetRoseModelTransform(scene, group)
     }
   }, [scene, viewport.height, viewport.width, frame.fillRatio, frame.verticalFocus])
 
   useFrame((_, delta) => {
-    if (autoRotate && groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.35
+    const group = groupRef.current
+    if (!group) {
+      return
+    }
+
+    if (!isEntranceCompleteRef.current) {
+      entranceProgressRef.current = Math.min(
+        1,
+        entranceProgressRef.current + delta / roseEntranceDurationSeconds,
+      )
+      group.scale.setScalar(
+        getRoseEntranceScale(
+          entranceProgressRef.current,
+          targetScaleRef.current,
+        ),
+      )
+
+      if (entranceProgressRef.current >= 1) {
+        isEntranceCompleteRef.current = true
+        group.scale.setScalar(targetScaleRef.current)
+      }
+    }
+
+    if (autoRotate) {
+      group.rotation.y += delta * 0.35
     }
   })
 
@@ -66,6 +115,35 @@ function RoseModel({
     <group ref={groupRef}>
       <primitive object={scene} />
     </group>
+  )
+}
+
+function RoseOrbitControls() {
+  const controlsRef = useRef<OrbitControlsImpl>(null)
+  const { azimuthAngle, polarAngle } = getRoseInitialOrientation()
+
+  useLayoutEffect(() => {
+    const controls = controlsRef.current
+    if (!controls) {
+      return
+    }
+
+    controls.setAzimuthalAngle(azimuthAngle)
+    controls.setPolarAngle(polarAngle)
+    controls.update()
+  }, [azimuthAngle, polarAngle])
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      autoRotate={false}
+      enablePan={false}
+      enableZoom={false}
+      makeDefault
+      minPolarAngle={Math.PI / 4}
+      maxPolarAngle={Math.PI / 1.9}
+      target={[0, 0, 0]}
+    />
   )
 }
 
@@ -88,15 +166,7 @@ function SceneContent({
         <RoseModel autoRotate={autoRotate} frame={frame} />
       </Suspense>
 
-      <OrbitControls
-        autoRotate={false}
-        enablePan={false}
-        enableZoom={false}
-        makeDefault
-        minPolarAngle={Math.PI / 4}
-        maxPolarAngle={Math.PI / 1.9}
-        target={[0, 0, 0]}
-      />
+      <RoseOrbitControls />
     </>
   )
 }
