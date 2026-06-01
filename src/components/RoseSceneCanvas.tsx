@@ -1,6 +1,13 @@
 import { Html, OrbitControls, useGLTF, useProgress } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import {
+  Suspense,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { Group } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
@@ -51,6 +58,7 @@ function RoseModel({
   const targetScaleRef = useRef(1)
   const entranceProgressRef = useRef(0)
   const isEntranceCompleteRef = useRef(false)
+  const hasInitialOrientationRef = useRef(false)
   const { viewport } = useThree()
 
   useLayoutEffect(() => {
@@ -60,11 +68,13 @@ function RoseModel({
     }
 
     fitRoseModelToViewport(scene, group, viewport, frame)
-
-    const { leanX, leanZ, startYaw } = getRoseInitialOrientation()
-    group.rotation.set(leanX, startYaw, leanZ)
-
     targetScaleRef.current = group.scale.x
+
+    if (!hasInitialOrientationRef.current) {
+      const { leanX, leanZ, startYaw } = getRoseInitialOrientation()
+      group.rotation.set(leanX, startYaw, leanZ)
+      hasInitialOrientationRef.current = true
+    }
 
     if (isEntranceCompleteRef.current) {
       group.scale.setScalar(targetScaleRef.current)
@@ -79,6 +89,7 @@ function RoseModel({
 
     return () => {
       resetRoseModelTransform(scene, group)
+      hasInitialOrientationRef.current = false
     }
   }, [scene, viewport.height, viewport.width, frame.fillRatio, frame.verticalFocus])
 
@@ -193,11 +204,16 @@ function useRoseFrameSettings(
   }, [])
 
   const baseFrame = frameSettings ?? responsiveFrame
+  const resolvedFillRatio = fillRatio ?? baseFrame.fillRatio
+  const resolvedVerticalFocus = verticalFocus ?? baseFrame.verticalFocus
 
-  return {
-    fillRatio: fillRatio ?? baseFrame.fillRatio,
-    verticalFocus: verticalFocus ?? baseFrame.verticalFocus,
-  }
+  return useMemo(
+    () => ({
+      fillRatio: resolvedFillRatio,
+      verticalFocus: resolvedVerticalFocus,
+    }),
+    [resolvedFillRatio, resolvedVerticalFocus],
+  )
 }
 
 export function RoseSceneCanvas({
