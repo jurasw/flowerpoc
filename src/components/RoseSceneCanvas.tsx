@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Group } from 'three'
+import type { Group } from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
 import {
@@ -91,7 +91,7 @@ function RoseModel({
       resetRoseModelTransform(scene, group)
       hasInitialOrientationRef.current = false
     }
-  }, [scene, viewport.height, viewport.width, frame.fillRatio, frame.verticalFocus])
+  }, [scene, viewport, frame])
 
   useFrame((_, delta) => {
     const group = groupRef.current

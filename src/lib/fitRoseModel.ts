@@ -1,4 +1,4 @@
-import { Box3, Group, Vector3 } from 'three'
+import { Box3, type Group, Vector3 } from 'three'
 
 interface ViewportSize {
   width: number
