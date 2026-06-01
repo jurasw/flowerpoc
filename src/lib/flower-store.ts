@@ -7,7 +7,7 @@ const SEED_FLOWERS: Flower[] = [
     id: 'poc',
     senderName: 'Janusz',
     recipientName: 'Barbary',
-    quote: 'kocham cię bardzo, z tobą Basiu i na łóżku i na sianie wszystko jedno',
+    quote: 'kocham cię bardzo, z tobą Basiu i na łóżku i na sianie, wszystko jedno',
     createdAt: '2026-05-30T16:10:36.850Z',
   },
 ]
