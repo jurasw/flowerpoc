@@ -44,7 +44,7 @@ function FlowerFreshnessBadge({
           ? `Wilted after ${FLOWER_LIFESPAN_DAYS} days. Bloomed ${bloomedOn}`
           : `${lifecycle.daysRemaining} days of freshness left. Bloomed ${bloomedOn}`
       }
-      className="flex items-center gap-2 rounded-full border border-white/10 bg-black/55 px-2.5 py-1.5 shadow-lg shadow-black/50 backdrop-blur-md"
+      className="flex items-center gap-2 rounded-[2rem] border border-white/10 bg-black/55 px-2.5 py-1.5 shadow-lg shadow-black/50 backdrop-blur-md"
     >
       <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
         <Droplets className="size-3 text-rose-300/90" strokeWidth={1.75} />
@@ -69,19 +69,15 @@ function FlowerFreshnessBadge({
 
 function FlowerMessageCard({
   flower,
-  lifecycle,
-  bloomedOn,
 }: {
   flower: {
     recipientName: string
     senderName: string
     quote: string
   }
-  lifecycle: FlowerLifecycle
-  bloomedOn: string
 }) {
   return (
-    <article className="relative z-10 mx-auto w-full max-w-xl rounded-[2rem] border border-white/10 bg-[#100d0f]/90 p-7 pb-14 shadow-2xl shadow-black/40 backdrop-blur-xl sm:max-w-2xl sm:p-9 sm:pb-14 lg:bg-white/[0.04] lg:min-h-0">
+    <article className="relative z-10 mx-auto w-full max-w-xl rounded-[2rem] border border-white/10 bg-[#100d0f]/90 p-7 shadow-2xl shadow-black/40 backdrop-blur-xl sm:max-w-2xl sm:p-9 lg:bg-white/[0.04] lg:min-h-0">
       <div className="flex items-center gap-2.5 text-gold">
         <Heart className="size-3.5 fill-gold/80 text-gold" />
         <p className="text-[11px] font-medium uppercase tracking-[0.3em]">
@@ -103,10 +99,6 @@ function FlowerMessageCard({
       <p className="mt-6 text-right text-sm tracking-wide text-rose-200/70">
         — {flower.senderName}
       </p>
-
-      <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3">
-        <FlowerFreshnessBadge bloomedOn={bloomedOn} lifecycle={lifecycle} />
-      </div>
     </article>
   )
 }
@@ -136,22 +128,19 @@ function FlowerViewPage() {
           className="h-[calc(72svh-4.5rem)] shrink-0 lg:hidden"
         />
 
-        <div className="relative z-10 min-h-[46dvh] lg:-mt-2 lg:min-h-0">
-          <FlowerMessageCard
-            bloomedOn={bloomedOn}
-            flower={flower}
-            lifecycle={lifecycle}
-          />
-        </div>
+        <section className="relative z-10 lg:-mt-2">
+          <FlowerMessageCard flower={flower} />
 
-        <footer className="relative z-10 mt-6 flex justify-end">
-          <Link
-            className="shrink-0 pb-1 text-right text-[10px] font-medium uppercase tracking-[0.18em] text-stone-400 underline-offset-4 transition hover:text-rose-200 hover:underline sm:text-xs sm:tracking-[0.2em]"
-            to="/"
-          >
-            Send your own rose
-          </Link>
-        </footer>
+          <div className="mx-auto mt-4 flex w-full max-w-xl items-center justify-between gap-4 sm:max-w-2xl">
+            <FlowerFreshnessBadge bloomedOn={bloomedOn} lifecycle={lifecycle} />
+            <Link
+              className="shrink-0 pr-1 text-right text-[10px] font-medium uppercase tracking-[0.18em] text-stone-400 underline-offset-4 transition hover:text-rose-200 hover:underline sm:pr-1.5 sm:text-xs sm:tracking-[0.2em]"
+              to="/"
+            >
+              Send your own rose
+            </Link>
+          </div>
+        </section>
       </main>
     </div>
   )
