@@ -1,4 +1,4 @@
-import { Box3, Group, Vector3 } from 'three'
+import { Box3, type Group, Vector3 } from 'three'
 
 interface ViewportSize {
   width: number
@@ -43,4 +43,5 @@ export function resetRoseModelTransform(scene: Group, group: Group) {
   scene.rotation.set(0, 0, 0)
   scene.scale.set(1, 1, 1)
   group.scale.setScalar(1)
+  group.rotation.set(0, 0, 0)
 }

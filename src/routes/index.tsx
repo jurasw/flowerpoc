@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 import { Check, Copy, Flower2 } from 'lucide-react'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 
 import { RoseScene } from '#/components/RoseScene'
 import { roseModelUrl } from '#/lib/roseModel'
@@ -20,6 +20,24 @@ export const Route = createFileRoute('/')({
     ],
   }),
   component: CreateFlowerPage,
+})
+
+const RosePreviewPanel = memo(function RosePreviewPanel() {
+  return (
+    <section className="flex min-h-0 flex-col lg:flex-1">
+      <div className="relative h-[min(340px,48svh)] min-h-0 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#1a1012] via-[#120a0c] to-[#0a0608] p-1 shadow-2xl shadow-black/60 ring-1 ring-white/10 sm:h-[380px] lg:h-auto lg:min-h-[480px] lg:flex-1">
+        <div className="pointer-events-none absolute inset-x-10 -top-24 h-64 rounded-full bg-wine/25 blur-[110px]" />
+        <RoseScene className="absolute inset-0" deferUntilVisible />
+        <span className="pointer-events-none absolute left-6 top-6 text-[11px] font-medium uppercase tracking-[0.3em] text-gold/70">
+          Preview
+        </span>
+      </div>
+      <p className="mt-4 shrink-0 text-center text-sm text-stone-500">
+        Drag to rotate. Each rose stays fresh for five days from the moment its
+        link is created.
+      </p>
+    </section>
+  )
 })
 
 function CreateFlowerPage() {
@@ -191,22 +209,7 @@ function CreateFlowerPage() {
           ) : null}
         </section>
 
-        <section className="flex flex-col lg:min-h-0 lg:flex-1">
-          <div className="relative h-[min(340px,48svh)] overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#1a1012] via-[#120a0c] to-[#0a0608] p-1 shadow-2xl shadow-black/60 ring-1 ring-white/10 sm:h-[380px] lg:flex lg:h-auto lg:min-h-[480px] lg:flex-1">
-            <div className="pointer-events-none absolute inset-x-10 -top-24 h-64 rounded-full bg-wine/25 blur-[110px]" />
-            <RoseScene
-              className="absolute inset-0"
-              deferUntilVisible
-            />
-            <span className="pointer-events-none absolute left-6 top-6 text-[11px] font-medium uppercase tracking-[0.3em] text-gold/70">
-              Preview
-            </span>
-          </div>
-          <p className="mt-4 shrink-0 text-center text-sm text-stone-500">
-            Drag to rotate. Each rose stays fresh for five days from the moment
-            its link is created.
-          </p>
-        </section>
+        <RosePreviewPanel />
       </div>
     </div>
   )
