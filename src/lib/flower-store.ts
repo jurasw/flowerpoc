@@ -16,13 +16,17 @@ for (const flower of SEED_FLOWERS) {
   flowers.set(flower.id, flower)
 }
 
-export function createFlowerRecord(input: CreateFlowerInput): Flower {
+export function createFlowerRecord(
+  input: CreateFlowerInput,
+  stripeSessionId?: string,
+): Flower {
   const flower: Flower = {
     id: crypto.randomUUID(),
     senderName: input.senderName.trim(),
     recipientName: input.recipientName.trim(),
     quote: input.quote.trim(),
     createdAt: new Date().toISOString(),
+    stripeSessionId,
   }
 
   flowers.set(flower.id, flower)
@@ -31,4 +35,16 @@ export function createFlowerRecord(input: CreateFlowerInput): Flower {
 
 export function getFlowerById(id: string): Flower | undefined {
   return flowers.get(id)
+}
+
+export function getFlowerByStripeSessionId(
+  stripeSessionId: string,
+): Flower | undefined {
+  for (const flower of flowers.values()) {
+    if (flower.stripeSessionId === stripeSessionId) {
+      return flower
+    }
+  }
+
+  return undefined
 }

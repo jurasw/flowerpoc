@@ -3,18 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { getExpiresAt } from '#/lib/flower-lifecycle'
 import type { CreateFlowerInput, CreateFlowerResult, Flower } from '#/lib/flower-types'
 import { createFlowerRecord, getFlowerById } from '#/lib/flower-store'
-
-function validateCreateFlowerInput(data: CreateFlowerInput): CreateFlowerInput {
-  const senderName = data.senderName.trim()
-  const recipientName = data.recipientName.trim()
-  const quote = data.quote.trim()
-
-  if (!senderName || !recipientName || !quote) {
-    throw new Error('Sender name, recipient name, and quote are required.')
-  }
-
-  return { senderName, recipientName, quote }
-}
+import { validateCreateFlowerInput } from '#/lib/validate-flower-input'
 
 export const createFlower = createServerFn({ method: 'POST' })
   .inputValidator((data: CreateFlowerInput) => validateCreateFlowerInput(data))

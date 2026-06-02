@@ -15,10 +15,19 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
 html,
 body,
 #app {
   min-height: 100%;
+}
+
+[id] {
+  scroll-margin-top: 5rem;
 }
 
 body {

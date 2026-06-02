@@ -53,7 +53,8 @@ function RoseModel({
   autoRotate: boolean
   frame: RoseFrameSettings
 }) {
-  const { scene } = useGLTF(roseModelUrl)
+  const { scene: sourceScene } = useGLTF(roseModelUrl)
+  const scene = useMemo(() => sourceScene.clone(true), [sourceScene])
   const groupRef = useRef<Group>(null)
   const targetScaleRef = useRef(1)
   const entranceProgressRef = useRef(0)
@@ -64,6 +65,10 @@ function RoseModel({
   useLayoutEffect(() => {
     const group = groupRef.current
     if (!group) {
+      return
+    }
+
+    if (viewport.width < 0.01 || viewport.height < 0.01) {
       return
     }
 
@@ -216,6 +221,39 @@ function useRoseFrameSettings(
   )
 }
 
+function RoseCanvasResizeObserver() {
+  const { gl, invalidate, size } = useThree()
+
+  useEffect(() => {
+    const canvas = gl.domElement
+    const parent = canvas.parentElement
+
+    if (!parent) {
+      return
+    }
+
+    const observer = new ResizeObserver(() => {
+      if (parent.clientWidth < 1 || parent.clientHeight < 1) {
+        return
+      }
+
+      gl.setSize(parent.clientWidth, parent.clientHeight, false)
+      invalidate()
+    })
+
+    observer.observe(parent)
+    return () => observer.disconnect()
+  }, [gl, invalidate])
+
+  useEffect(() => {
+    if (size.width < 1 || size.height < 1) {
+      invalidate()
+    }
+  }, [size.width, size.height, invalidate])
+
+  return null
+}
+
 export function RoseSceneCanvas({
   className,
   autoRotate = true,
@@ -234,10 +272,11 @@ export function RoseSceneCanvas({
         className="h-full w-full"
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
-        resize={{ scroll: false, debounce: { scroll: 0, resize: 0 } }}
+        resize={{ scroll: false, debounce: { scroll: 50, resize: 50 } }}
         style={{ width: '100%', height: '100%', display: 'block' }}
         camera={{ fov: 32, near: 0.01, far: 100, position: [0, 0, 3.1] }}
       >
+        <RoseCanvasResizeObserver />
         <SceneContent autoRotate={autoRotate} frame={frame} />
       </Canvas>
     </div>
