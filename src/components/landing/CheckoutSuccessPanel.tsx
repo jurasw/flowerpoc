@@ -3,12 +3,14 @@ import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
 
 import type { CheckoutResult } from '#/lib/flower-types'
+import { useI18n } from '#/lib/i18n/i18n-context'
 
 interface CheckoutSuccessPanelProps {
   result: CheckoutResult
 }
 
 export function CheckoutSuccessPanel({ result }: CheckoutSuccessPanelProps) {
+  const { t } = useI18n()
   const [copied, setCopied] = useState(false)
 
   const shareUrl =
@@ -29,10 +31,10 @@ export function CheckoutSuccessPanel({ result }: CheckoutSuccessPanelProps) {
   return (
     <div className="mt-6 shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
       <p className="font-serif text-lg italic text-stone-100">
-        Your rose is ready.
+        {t.checkoutSuccess.title}
       </p>
       <p className="mt-1 text-sm text-stone-400">
-        Copy the link below and send it by email or text.
+        {t.checkoutSuccess.subtitle}
       </p>
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
         <input
@@ -46,7 +48,7 @@ export function CheckoutSuccessPanel({ result }: CheckoutSuccessPanelProps) {
           type="button"
         >
           {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-          {copied ? 'Copied' : 'Copy link'}
+          {copied ? t.checkoutSuccess.copied : t.checkoutSuccess.copy}
         </button>
       </div>
       <Link
@@ -54,7 +56,7 @@ export function CheckoutSuccessPanel({ result }: CheckoutSuccessPanelProps) {
         params={{ id: result.id }}
         to="/flower/$id"
       >
-        Preview what they will see →
+        {t.checkoutSuccess.previewLink}
       </Link>
     </div>
   )

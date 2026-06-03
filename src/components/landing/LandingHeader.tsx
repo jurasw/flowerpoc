@@ -1,14 +1,18 @@
 import { Flower2 } from 'lucide-react'
 
+import { LanguageSwitcher } from '#/components/LanguageSwitcher'
+import { useI18n } from '#/lib/i18n/i18n-context'
 import { productConfig } from '#/lib/product-config'
 
-const navLinks = [
-  { href: '#how-it-works', label: 'How it works' },
-  { href: '#features', label: 'Features' },
-  { href: '#pricing', label: 'Pricing' },
-]
-
 export function LandingHeader() {
+  const { t } = useI18n()
+
+  const navLinks = [
+    { href: '#how-it-works', label: t.header.nav.howItWorks },
+    { href: '#features', label: t.header.nav.features },
+    { href: '#pricing', label: t.header.nav.pricing },
+  ]
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -34,12 +38,15 @@ export function LandingHeader() {
           ))}
         </nav>
 
-        <a
-          className="inline-flex items-center justify-center rounded-lg bg-wine px-4 py-2 text-xs font-medium tracking-wide text-white transition hover:bg-wine-deep"
-          href="#create"
-        >
-          Send a rose
-        </a>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <a
+            className="inline-flex items-center justify-center rounded-lg bg-wine px-4 py-2 text-xs font-medium tracking-wide text-white transition hover:bg-wine-deep"
+            href="#create"
+          >
+            {t.header.cta}
+          </a>
+        </div>
       </div>
     </header>
   )

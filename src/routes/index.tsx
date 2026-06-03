@@ -8,7 +8,8 @@ import { LandingHero } from '#/components/landing/LandingHero'
 import { LandingHowItWorks } from '#/components/landing/LandingHowItWorks'
 import { LandingPricing } from '#/components/landing/LandingPricing'
 import { LandingValueStrip } from '#/components/landing/LandingValueStrip'
-import { productConfig } from '#/lib/product-config'
+import { getDictionary } from '#/lib/i18n/dictionaries'
+import type { Locale } from '#/lib/i18n/locale'
 import { roseModelUrl } from '#/lib/roseModel'
 
 interface HomeSearch {
@@ -27,26 +28,30 @@ function parseHomeSearch(search: Record<string, unknown>): HomeSearch {
 
 export const Route = createFileRoute('/')({
   validateSearch: parseHomeSearch,
-  head: () => ({
-    meta: [
-      {
-        title: `${productConfig.productName} — Send a rose that lasts`,
-      },
-      {
-        name: 'description',
-        content:
-          'Send a personalized digital rose with a private message. One payment, one link, five days of beauty.',
-      },
-    ],
-    links: [
-      {
-        rel: 'preload',
-        href: roseModelUrl,
-        as: 'fetch',
-        crossOrigin: 'anonymous',
-      },
-    ],
-  }),
+  loader: ({ context }): { locale: Locale } => ({ locale: context.locale }),
+  head: ({ loaderData }) => {
+    const t = getDictionary(loaderData?.locale ?? 'en')
+
+    return {
+      meta: [
+        {
+          title: t.meta.homeTitle(t.checkout.productName),
+        },
+        {
+          name: 'description',
+          content: t.meta.homeDescription,
+        },
+      ],
+      links: [
+        {
+          rel: 'preload',
+          href: roseModelUrl,
+          as: 'fetch',
+          crossOrigin: 'anonymous',
+        },
+      ],
+    }
+  },
   component: LandingPage,
 })
 

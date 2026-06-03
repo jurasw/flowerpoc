@@ -3,11 +3,19 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import { NotFoundPage } from '#/components/NotFoundPage'
+import { getDictionary } from '#/lib/i18n/dictionaries'
+import { I18nProvider } from '#/lib/i18n/i18n-context'
+import { DEFAULT_LOCALE, type Locale } from '#/lib/i18n/locale'
+import { getLocale } from '#/server/locale'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
   notFoundComponent: NotFoundPage,
-  head: () => ({
+  beforeLoad: async (): Promise<{ locale: Locale }> => ({
+    locale: await getLocale(),
+  }),
+  loader: ({ context }): { locale: Locale } => ({ locale: context.locale }),
+  head: ({ loaderData }) => ({
     meta: [
       {
         charSet: 'utf-8',
@@ -17,7 +25,8 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Digital Rose',
+        title: getDictionary(loaderData?.locale ?? DEFAULT_LOCALE).meta
+          .rootTitle,
       },
       {
         name: 'theme-color',
@@ -61,13 +70,15 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const { locale } = Route.useLoaderData()
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <HeadContent />
       </head>
       <body>
-        {children}
+        <I18nProvider locale={locale}>{children}</I18nProvider>
         <TanStackDevtools
           config={{
             position: 'bottom-right',

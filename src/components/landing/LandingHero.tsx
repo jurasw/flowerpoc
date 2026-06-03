@@ -1,7 +1,9 @@
 import { RoseScene } from '#/components/RoseScene'
-import { productConfig } from '#/lib/product-config'
+import { useI18n } from '#/lib/i18n/i18n-context'
 
 export function LandingHero() {
+  const { t } = useI18n()
+
   return (
     <section
       className="relative overflow-hidden px-6 pb-16 pt-12 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20"
@@ -12,19 +14,17 @@ export function LandingHero() {
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-rose-300/80">
-            {productConfig.productName}
+            {t.checkout.productName}
           </p>
 
           <h1 className="mt-5 font-serif text-5xl font-medium leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            Send a rose
+            {t.hero.titleLineOne}
             <br />
-            <span className="italic text-rose-300">that lasts.</span>
+            <span className="italic text-rose-300">{t.hero.titleLineTwo}</span>
           </h1>
 
           <p className="mt-6 max-w-lg text-base leading-relaxed text-stone-400 sm:text-lg">
-            A hand-rendered digital rose paired with a message meant only for
-            them. Compose, pay once, and share a private link they will never
-            forget.
+            {t.hero.description}
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -32,13 +32,13 @@ export function LandingHero() {
               className="inline-flex items-center justify-center rounded-lg bg-wine px-6 py-3.5 text-sm font-medium tracking-wide text-white shadow-lg shadow-wine/20 transition hover:bg-wine-deep"
               href="#create"
             >
-              Create your rose
+              {t.hero.primaryCta}
             </a>
             <a
               className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-6 py-3.5 text-sm font-medium text-stone-300 transition hover:border-rose-300/30 hover:text-rose-200"
               href="#how-it-works"
             >
-              See how it works
+              {t.hero.secondaryCta}
             </a>
           </div>
         </div>

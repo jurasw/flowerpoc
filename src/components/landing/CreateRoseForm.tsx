@@ -4,6 +4,7 @@ import { memo, useEffect, useState } from 'react'
 import { CheckoutSuccessPanel } from '#/components/landing/CheckoutSuccessPanel'
 import { RoseScene } from '#/components/RoseScene'
 import type { CheckoutResult } from '#/lib/flower-types'
+import { useI18n } from '#/lib/i18n/i18n-context'
 import { formatProductPrice, productConfig } from '#/lib/product-config'
 import createCheckoutSession from '#/server/CreateCheckoutSession'
 import getCheckoutResult from '#/server/GetCheckoutResult'
@@ -12,18 +13,19 @@ const pollAttempts = 5
 const pollDelayMs = 1500
 
 const RosePreviewPanel = memo(function RosePreviewPanel() {
+  const { t } = useI18n()
+
   return (
     <section className="flex min-h-0 flex-col lg:flex-1">
       <div className="relative h-[min(340px,48svh)] min-h-0 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#1a1012] via-[#120a0c] to-[#0a0608] p-1 shadow-2xl shadow-black/60 ring-1 ring-white/10 sm:h-[380px] lg:h-auto lg:min-h-[480px] lg:flex-1">
         <div className="pointer-events-none absolute inset-x-10 -top-24 h-64 rounded-full bg-wine/25 blur-[110px]" />
         <RoseScene className="absolute inset-0" deferUntilVisible />
         <span className="pointer-events-none absolute left-6 top-6 text-[11px] font-medium uppercase tracking-[0.3em] text-gold/70">
-          Preview
+          {t.createForm.preview.label}
         </span>
       </div>
       <p className="mt-4 shrink-0 text-center text-sm text-stone-500">
-        Drag to rotate. Each rose stays fresh for {productConfig.lifespanDays}{' '}
-        days from the moment its link is created.
+        {t.createForm.preview.caption(productConfig.lifespanDays)}
       </p>
     </section>
   )
@@ -38,6 +40,7 @@ export function CreateRoseForm({
   sessionId,
   isCanceled = false,
 }: CreateRoseFormProps) {
+  const { locale, t } = useI18n()
   const createCheckoutSessionFn = useServerFn(createCheckoutSession)
   const getCheckoutResultFn = useServerFn(getCheckoutResult)
 
@@ -54,6 +57,7 @@ export function CreateRoseForm({
       return
     }
 
+    const activeSessionId = sessionId
     let isCancelled = false
     let attempt = 0
 
@@ -61,7 +65,7 @@ export function CreateRoseForm({
       while (attempt < pollAttempts && !isCancelled) {
         try {
           const checkoutResult = await getCheckoutResultFn({
-            data: { sessionId },
+            data: { sessionId: activeSessionId },
           })
 
           if (checkoutResult.isReady) {
@@ -73,7 +77,7 @@ export function CreateRoseForm({
           }
         } catch {
           if (!isCancelled) {
-            setError('Could not verify your payment. Please contact support.')
+            setError(t.createForm.errors.verifyFailed)
             setIsFinalizing(false)
           }
           return
@@ -89,9 +93,7 @@ export function CreateRoseForm({
       }
 
       if (!isCancelled) {
-        setError(
-          'Payment received, but your rose is still being prepared. Refresh in a moment.',
-        )
+        setError(t.createForm.errors.stillPreparing)
         setIsFinalizing(false)
       }
     }
@@ -101,7 +103,7 @@ export function CreateRoseForm({
     return () => {
       isCancelled = true
     }
-  }, [sessionId, getCheckoutResultFn])
+  }, [sessionId, getCheckoutResultFn, t])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
@@ -110,20 +112,20 @@ export function CreateRoseForm({
 
     try {
       const checkout = await createCheckoutSessionFn({
-        data: { senderName, recipientName, quote },
+        data: { senderName, recipientName, quote, locale },
       })
       window.location.assign(checkout.url)
     } catch (submitError) {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : 'Could not start checkout. Please try again.',
+          : t.createForm.errors.checkoutFailed,
       )
       setIsSubmitting(false)
     }
   }
 
-  const payButtonLabel = `Pay ${formatProductPrice()} & create rose`
+  const payButtonLabel = t.createForm.payButton(formatProductPrice())
 
   return (
     <section
@@ -132,28 +134,26 @@ export function CreateRoseForm({
     >
       <div className="mx-auto max-w-6xl">
         <p className="text-center text-[11px] font-semibold uppercase tracking-[0.35em] text-gold/70">
-          Create
+          {t.createForm.eyebrow}
         </p>
         <h2 className="mt-4 text-center font-serif text-4xl font-medium text-white sm:text-5xl">
-          Compose your rose
+          {t.createForm.title}
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-center text-stone-500">
-          Fill in the details below. After payment, you will receive a private
-          link to share.
+          {t.createForm.subtitle}
         </p>
 
         <div className="mt-14 flex flex-col gap-10 lg:flex-row lg:items-stretch lg:gap-14">
           <div className="flex flex-1 flex-col">
             {isCanceled ? (
               <p className="mb-6 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-stone-400">
-                Checkout was canceled. Your rose is still waiting — pick up where
-                you left off.
+                {t.createForm.canceledNotice}
               </p>
             ) : null}
 
             {isFinalizing ? (
               <p className="mb-6 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-stone-300">
-                Finalizing your rose…
+                {t.createForm.finalizingNotice}
               </p>
             ) : null}
 
@@ -161,13 +161,13 @@ export function CreateRoseForm({
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block space-y-2">
                   <span className="text-xs font-medium uppercase tracking-[0.12em] text-stone-500">
-                    Your name
+                    {t.createForm.senderLabel}
                   </span>
                   <input
                     className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-rose-300/40 focus:ring-2 focus:ring-rose-300/10"
                     maxLength={80}
                     onChange={(event) => setSenderName(event.target.value)}
-                    placeholder="Alex"
+                    placeholder={t.createForm.senderPlaceholder}
                     required
                     value={senderName}
                   />
@@ -175,13 +175,13 @@ export function CreateRoseForm({
 
                 <label className="block space-y-2">
                   <span className="text-xs font-medium uppercase tracking-[0.12em] text-stone-500">
-                    Their name
+                    {t.createForm.recipientLabel}
                   </span>
                   <input
                     className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-rose-300/40 focus:ring-2 focus:ring-rose-300/10"
                     maxLength={80}
                     onChange={(event) => setRecipientName(event.target.value)}
-                    placeholder="Someone special"
+                    placeholder={t.createForm.recipientPlaceholder}
                     required
                     value={recipientName}
                   />
@@ -190,13 +190,13 @@ export function CreateRoseForm({
 
               <label className="block space-y-2">
                 <span className="text-xs font-medium uppercase tracking-[0.12em] text-stone-500">
-                  Your message
+                  {t.createForm.messageLabel}
                 </span>
                 <textarea
                   className="min-h-36 w-full resize-none rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-rose-300/40 focus:ring-2 focus:ring-rose-300/10"
                   maxLength={500}
                   onChange={(event) => setQuote(event.target.value)}
-                  placeholder="Write something only they should read..."
+                  placeholder={t.createForm.messagePlaceholder}
                   required
                   value={quote}
                 />
@@ -213,7 +213,7 @@ export function CreateRoseForm({
                 disabled={isSubmitting || isFinalizing}
                 type="submit"
               >
-                {isSubmitting ? 'Redirecting to checkout…' : payButtonLabel}
+                {isSubmitting ? t.createForm.redirecting : payButtonLabel}
               </button>
             </form>
 

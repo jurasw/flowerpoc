@@ -1,19 +1,33 @@
 import { createServerFn } from '@tanstack/react-start'
 
 import type { CreateFlowerInput } from '#/lib/flower-types'
+import { getDictionary } from '#/lib/i18n/dictionaries'
+import { type Locale, resolveLocale } from '#/lib/i18n/locale'
 import { productConfig } from '#/lib/product-config'
 import { getAppUrl, getStripeClient } from '#/lib/stripe-client'
 import { validateCreateFlowerInput } from '#/lib/validate-flower-input'
+
+interface CreateCheckoutSessionInput extends CreateFlowerInput {
+  locale?: string
+}
 
 export interface CreateCheckoutSessionResult {
   url: string
 }
 
 export default createServerFn({ method: 'POST' })
-  .inputValidator((data: CreateFlowerInput) => validateCreateFlowerInput(data))
+  .inputValidator(
+    (
+      data: CreateCheckoutSessionInput,
+    ): CreateFlowerInput & { locale: Locale } => ({
+      ...validateCreateFlowerInput(data),
+      locale: resolveLocale(data.locale),
+    }),
+  )
   .handler(async ({ data }): Promise<CreateCheckoutSessionResult> => {
     const stripe = getStripeClient()
     const appUrl = getAppUrl()
+    const t = getDictionary(data.locale)
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -24,8 +38,10 @@ export default createServerFn({ method: 'POST' })
             currency: productConfig.currency,
             unit_amount: productConfig.priceCents,
             product_data: {
-              name: productConfig.productName,
-              description: `A personalized digital rose with a private message. Fresh for ${productConfig.lifespanDays} days.`,
+              name: t.checkout.productName,
+              description: t.checkout.productDescription(
+                productConfig.lifespanDays,
+              ),
             },
           },
         },
@@ -40,7 +56,7 @@ export default createServerFn({ method: 'POST' })
     })
 
     if (!session.url) {
-      throw new Error('Could not start checkout. Please try again.')
+      throw new Error(t.createForm.errors.checkoutFailed)
     }
 
     return { url: session.url }

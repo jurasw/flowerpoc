@@ -4,6 +4,7 @@ import { Droplets, Heart } from 'lucide-react'
 import { RoseScene } from '#/components/RoseScene'
 import { FLOWER_LIFESPAN_DAYS, getFlowerLifecycle } from '#/lib/flower-lifecycle'
 import type { FlowerLifecycle } from '#/lib/flower-types'
+import { useI18n } from '#/lib/i18n/i18n-context'
 import { roseModelUrl } from '#/lib/roseModel'
 import { getFlower } from '#/server/flowers'
 
@@ -37,29 +38,34 @@ function FlowerFreshnessBadge({
   lifecycle: FlowerLifecycle
   bloomedOn: string
 }): React.ReactElement {
+  const { t } = useI18n()
+
   return (
     <div
       aria-label={
         lifecycle.isExpired
-          ? `Wilted after ${FLOWER_LIFESPAN_DAYS} days. Bloomed ${bloomedOn}`
-          : `${lifecycle.daysRemaining} days of freshness left. Bloomed ${bloomedOn}`
+          ? t.flower.freshness.wiltedAria(FLOWER_LIFESPAN_DAYS, bloomedOn)
+          : t.flower.freshness.freshAria(lifecycle.daysRemaining, bloomedOn)
       }
       className="flex items-center gap-2 rounded-[2rem] border border-white/10 bg-black/55 px-2.5 py-1.5 shadow-lg shadow-black/50 backdrop-blur-md"
+      role="img"
     >
       <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
         <Droplets className="size-3 text-rose-300/90" strokeWidth={1.75} />
       </span>
       <div className="min-w-0 text-[10px] font-medium uppercase leading-snug tracking-[0.12em]">
         {lifecycle.isExpired ? (
-          <p className="text-gold/90">Wilted · {bloomedOn}</p>
+          <p className="text-gold/90">
+            {t.flower.freshness.wilted} · {bloomedOn}
+          </p>
         ) : (
           <>
             <p className="text-stone-100">
-              {lifecycle.daysRemaining === 1
-                ? '1 day left'
-                : `${lifecycle.daysRemaining} days left`}
+              {t.flower.freshness.daysLeft(lifecycle.daysRemaining)}
             </p>
-            <p className="mt-0.5 text-stone-500">Bloomed {bloomedOn}</p>
+            <p className="mt-0.5 text-stone-500">
+              {t.flower.freshness.bloomedOn(bloomedOn)}
+            </p>
           </>
         )}
       </div>
@@ -76,18 +82,20 @@ function FlowerMessageCard({
     quote: string
   }
 }) {
+  const { t } = useI18n()
+
   return (
     <article className="relative z-10 mx-auto w-full max-w-xl rounded-[2rem] border border-white/10 bg-[#100d0f]/90 p-7 shadow-2xl shadow-black/40 backdrop-blur-xl sm:max-w-2xl sm:p-9 lg:bg-white/[0.04] lg:min-h-0">
       <div className="flex items-center gap-2.5 text-gold">
         <Heart className="size-3.5 fill-gold/80 text-gold" />
         <p className="text-[11px] font-medium uppercase tracking-[0.3em]">
-          Dla {flower.recipientName}
+          {t.flower.forRecipient(flower.recipientName)}
         </p>
       </div>
 
       <h1 className="mt-5 font-serif text-4xl font-medium leading-[1.05] text-white sm:text-5xl">
         <span className="italic text-rose-200">{flower.senderName}</span>
-        {' '} podarował Ci różę
+        {t.flower.senderGaveRoseSuffix}
       </h1>
 
       <div className="mt-7 h-px w-16 bg-gradient-to-r from-gold/70 to-transparent" />
@@ -105,9 +113,10 @@ function FlowerMessageCard({
 
 function FlowerViewPage() {
   const flower = Route.useLoaderData()
+  const { locale, t } = useI18n()
   const lifecycle = getFlowerLifecycle(flower.createdAt)
 
-  const bloomedOn = new Date(flower.createdAt).toLocaleDateString(undefined, {
+  const bloomedOn = new Date(flower.createdAt).toLocaleDateString(locale, {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
@@ -137,7 +146,7 @@ function FlowerViewPage() {
               className="shrink-0 pr-1 text-right text-[10px] font-medium uppercase tracking-[0.18em] text-stone-400 underline-offset-4 transition hover:text-rose-200 hover:underline sm:pr-1.5 sm:text-xs sm:tracking-[0.2em]"
               to="/"
             >
-              Send your own rose
+              {t.flower.sendYourOwn}
             </Link>
           </div>
         </section>
