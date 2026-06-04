@@ -1,6 +1,9 @@
 import { HeroExampleMessageCard } from '#/components/landing/HeroExampleMessageCard'
+import { HeroExampleProgressPills } from '#/components/landing/HeroExampleProgressPills'
 import { useHeroExampleCardTransition } from '#/hooks/useHeroExampleCardTransition'
-import { useHeroExampleRotation } from '#/hooks/useHeroExampleRotation'
+import { useHeroExampleCarousel } from '#/hooks/useHeroExampleCarousel'
+import { useHeroExampleSwipe } from '#/hooks/useHeroExampleSwipe'
+import { heroExampleCardStageHeightClass } from '#/lib/hero-example-card-stage'
 import {
   getHeroExampleIncomingCardClass,
   getHeroExampleLeavingCardClass,
@@ -16,23 +19,41 @@ export function LandingHeroRoseExamples({
 }: LandingHeroRoseExamplesProps) {
   const { t } = useI18n()
   const examples = t.hero.examples.items
-  const activeIndex = useHeroExampleRotation(examples.length)
+  const { activeIndex, progressCycleKey, goToIndex, goNext, goPrev } =
+    useHeroExampleCarousel(examples.length)
   const { shownIndex, leavingIndex, isLeavingVisible, isIncomingVisible } =
     useHeroExampleCardTransition(activeIndex)
+  const swipeHandlers = useHeroExampleSwipe({
+    isEnabled: examples.length > 1,
+    onSwipeLeft: goNext,
+    onSwipeRight: goPrev,
+  })
 
   const shownExample = examples[shownIndex]
   const leavingExample =
     leavingIndex === null ? undefined : examples[leavingIndex]
 
   return (
-    <div aria-live="polite" className={className}>
+    <div aria-live="polite" className={`flex w-full flex-col items-start ${className}`}>
       <p className="sr-only">{t.hero.examples.title}</p>
 
-      <div className="relative isolate grid overflow-hidden [&>*]:col-start-1 [&>*]:row-start-1">
+      {examples.length > 1 ? (
+        <HeroExampleProgressPills
+          activeIndex={activeIndex}
+          labels={examples.map((example) => example.tabLabel)}
+          onSelect={goToIndex}
+          progressCycleKey={progressCycleKey}
+        />
+      ) : null}
+
+      <div
+        className={`relative w-full shrink-0 touch-pan-y overflow-hidden ${heroExampleCardStageHeightClass}`}
+        {...swipeHandlers}
+      >
         {leavingExample ? (
           <div
             aria-hidden="true"
-            className={`pointer-events-none ${getHeroExampleLeavingCardClass(isLeavingVisible)}`}
+            className={`pointer-events-none absolute inset-x-0 top-0 z-0 ${getHeroExampleLeavingCardClass(isLeavingVisible)}`}
           >
             <HeroExampleMessageCard example={leavingExample} isOverlay />
           </div>
@@ -40,7 +61,7 @@ export function LandingHeroRoseExamples({
 
         {shownExample ? (
           <div
-            className={`relative z-[1] ${getHeroExampleIncomingCardClass(isIncomingVisible)}`}
+            className={`absolute inset-x-0 top-0 z-[1] pointer-events-auto ${getHeroExampleIncomingCardClass(isIncomingVisible)}`}
           >
             <HeroExampleMessageCard example={shownExample} isOverlay />
           </div>

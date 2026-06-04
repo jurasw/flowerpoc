@@ -31,6 +31,7 @@ export interface RoseSceneCanvasProps {
   fillRatio?: number
   verticalFocus?: number
   frameSettings?: RoseFrameSettings
+  viewportRefitChangeRatio?: number
 }
 
 useGLTF.preload(roseModelUrl)
@@ -50,9 +51,11 @@ function RoseLoader() {
 function RoseModel({
   autoRotate,
   frame,
+  viewportRefitChangeRatio,
 }: {
   autoRotate: boolean
   frame: RoseFrameSettings
+  viewportRefitChangeRatio: number
 }) {
   const { scene: sourceScene } = useGLTF(roseModelUrl)
   const scene = useMemo(() => sourceScene.clone(true), [sourceScene])
@@ -92,6 +95,7 @@ function RoseModel({
       !hasRoseViewportChangedSignificantly(
         fittedViewportRef.current,
         viewportSize,
+        viewportRefitChangeRatio,
       )
     ) {
       return
@@ -117,7 +121,7 @@ function RoseModel({
         ),
       )
     }
-  }, [scene, viewportWidth, viewportHeight, frame])
+  }, [scene, viewportWidth, viewportHeight, frame, viewportRefitChangeRatio])
 
   useFrame((_, delta) => {
     const group = groupRef.current
@@ -187,9 +191,11 @@ function RoseOrbitControls() {
 function SceneContent({
   autoRotate,
   frame,
+  viewportRefitChangeRatio,
 }: {
   autoRotate: boolean
   frame: RoseFrameSettings
+  viewportRefitChangeRatio: number
 }) {
   return (
     <>
@@ -200,7 +206,11 @@ function SceneContent({
       <spotLight position={[0, 6, 2]} angle={0.5} penumbra={1} intensity={1.4} />
 
       <Suspense fallback={<RoseLoader />}>
-        <RoseModel autoRotate={autoRotate} frame={frame} />
+        <RoseModel
+          autoRotate={autoRotate}
+          frame={frame}
+          viewportRefitChangeRatio={viewportRefitChangeRatio}
+        />
       </Suspense>
 
       <RoseOrbitControls />
@@ -293,6 +303,7 @@ export const RoseSceneCanvas = memo(function RoseSceneCanvas({
   fillRatio,
   verticalFocus,
   frameSettings,
+  viewportRefitChangeRatio = 0.06,
 }: RoseSceneCanvasProps) {
   const frame = useRoseFrameSettings(frameSettings, fillRatio, verticalFocus)
   const rootClassName = ['relative h-full w-full', className]
@@ -310,7 +321,11 @@ export const RoseSceneCanvas = memo(function RoseSceneCanvas({
         camera={{ fov: 32, near: 0.01, far: 100, position: [0, 0, 3.1] }}
       >
         <RoseCanvasResizeObserver />
-        <SceneContent autoRotate={autoRotate} frame={frame} />
+        <SceneContent
+          autoRotate={autoRotate}
+          frame={frame}
+          viewportRefitChangeRatio={viewportRefitChangeRatio}
+        />
       </Canvas>
     </div>
   )

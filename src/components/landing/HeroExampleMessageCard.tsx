@@ -46,7 +46,7 @@ export function HeroExampleMessageCard({
       </div>
 
       <h3 className="mt-4 font-serif text-2xl font-medium leading-tight text-white sm:text-[1.65rem]">
-        <span className="italic text-rose-200">{example.senderName}</span>
+        <span className="italic text-rose-soft">{example.senderName}</span>
         {t.flower.senderGaveRoseSuffix}
       </h3>
 

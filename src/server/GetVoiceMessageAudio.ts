@@ -7,7 +7,7 @@ export interface VoiceMessageAudioResult {
   dataBase64: string
 }
 
-export default createServerFn({ method: 'GET' })
+const getVoiceMessageAudio = createServerFn({ method: 'GET' })
   .inputValidator((data: { voiceMessageId: string }) => {
     const voiceMessageId = data.voiceMessageId.trim()
 
@@ -29,3 +29,5 @@ export default createServerFn({ method: 'GET' })
       dataBase64: message.dataBase64,
     }
   })
+
+export default getVoiceMessageAudio

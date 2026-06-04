@@ -84,8 +84,8 @@ export function VoiceWaveformBars({
   return (
     <div
       aria-disabled={isDisabled}
-      className={`flex h-10 w-full min-w-0 flex-1 touch-none items-end gap-[2px] rounded-md px-0.5 ${
-        isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+      className={`flex h-10 w-full min-w-0 max-w-full touch-none items-end gap-[2px] rounded-md px-0.5 ${
+        isDisabled ? 'pointer-events-none cursor-not-allowed opacity-50' : 'cursor-pointer'
       }`}
       onPointerCancel={handlePointerUp}
       onPointerDown={handlePointerDown}

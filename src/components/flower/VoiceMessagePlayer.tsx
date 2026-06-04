@@ -68,7 +68,7 @@ export function VoiceMessagePlayer({ voiceMessageId }: VoiceMessagePlayerProps) 
   }
 
   return (
-    <div className="mt-7 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+    <div className="relative z-20 mt-7 rounded-2xl border border-white/10 bg-white/[0.03] p-4 pointer-events-auto">
       <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold/80">
         {t.flower.voice.label}
       </p>

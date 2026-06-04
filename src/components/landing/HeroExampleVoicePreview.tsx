@@ -1,7 +1,11 @@
-import { Pause, Play } from 'lucide-react'
+import { Pause } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 
 import { VoiceWaveformBars } from '#/components/voice/VoiceWaveformBars'
+import {
+  VoicePlayIcon,
+  VoiceWaveformIconButton,
+} from '#/components/voice/VoiceWaveformIconButton'
 import { formatAudioTime } from '#/lib/format-audio-time'
 
 interface HeroExampleVoicePreviewProps {
@@ -72,7 +76,7 @@ export function HeroExampleVoicePreview({
     <div
       className={
         isMilky
-          ? 'mt-5 rounded-2xl border border-ivory/20 bg-ivory/10 p-3.5 backdrop-blur-md'
+          ? 'mt-5 rounded-2xl border border-ivory/20 bg-ivory/10 p-3.5'
           : 'mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5'
       }
     >
@@ -86,27 +90,29 @@ export function HeroExampleVoicePreview({
       </div>
 
       <div className="mt-3 grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
-        <button
-          aria-label={playButtonLabel}
-          className="inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-stone-100 transition hover:border-rose-300/30 hover:bg-white/[0.1]"
+        <VoiceWaveformIconButton
+          ariaLabel={playButtonLabel}
+          className="border-white/10 bg-white/[0.06] text-stone-100 hover:border-rose-300/30 hover:bg-white/[0.1]"
           onClick={togglePlayback}
-          type="button"
+          size="sm"
         >
           {isPlaying ? (
             <Pause className="size-3.5" />
           ) : (
-            <Play className="size-3.5 translate-x-0.5" />
+            <VoicePlayIcon className="size-3.5" />
           )}
-        </button>
+        </VoiceWaveformIconButton>
 
-        <VoiceWaveformBars
+        <div className="relative z-0 min-w-0 overflow-hidden">
+          <VoiceWaveformBars
           isDisabled={false}
           onSeek={setProgressRatio}
           peaks={peaks}
           progressRatio={progressRatio}
-        />
+          />
+        </div>
 
-        <span className="shrink-0 tabular-nums text-[11px] text-stone-500">
+        <span className="relative z-0 shrink-0 tabular-nums text-[11px] text-stone-500">
           {`${formatAudioTime(progressRatio * durationSeconds)} / ${formatAudioTime(durationSeconds)}`}
         </span>
       </div>

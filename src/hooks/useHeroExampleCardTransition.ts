@@ -14,41 +14,43 @@ export function useHeroExampleCardTransition(
 ): HeroExampleCardTransitionState {
   const [shownIndex, setShownIndex] = useState(activeIndex)
   const [leavingIndex, setLeavingIndex] = useState<number | null>(null)
-  const [isLeavingVisible, setIsLeavingVisible] = useState(false)
+  const [isLeavingVisible, setIsLeavingVisible] = useState(true)
   const [isIncomingVisible, setIsIncomingVisible] = useState(true)
-  const transitionTimeoutRef = useRef<number | undefined>(undefined)
-  const transitionFrameRef = useRef<number | undefined>(undefined)
+  const shownIndexRef = useRef(activeIndex)
+  const startFrameRef = useRef<number | undefined>(undefined)
+  const endTimeoutRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
-    if (activeIndex === shownIndex) {
+    if (activeIndex === shownIndexRef.current) {
       return
     }
 
-    setLeavingIndex(shownIndex)
+    const previousIndex = shownIndexRef.current
+    shownIndexRef.current = activeIndex
+
+    setLeavingIndex(previousIndex)
     setShownIndex(activeIndex)
     setIsLeavingVisible(true)
     setIsIncomingVisible(false)
 
-    window.clearTimeout(transitionTimeoutRef.current)
-    cancelAnimationFrame(transitionFrameRef.current ?? 0)
+    cancelAnimationFrame(startFrameRef.current ?? 0)
+    window.clearTimeout(endTimeoutRef.current)
 
-    transitionFrameRef.current = requestAnimationFrame(() => {
-      transitionFrameRef.current = requestAnimationFrame(() => {
-        setIsLeavingVisible(false)
-        setIsIncomingVisible(true)
-      })
+    startFrameRef.current = requestAnimationFrame(() => {
+      setIsLeavingVisible(false)
+      setIsIncomingVisible(true)
     })
 
-    transitionTimeoutRef.current = window.setTimeout(() => {
+    endTimeoutRef.current = window.setTimeout(() => {
       setLeavingIndex(null)
-      setIsLeavingVisible(false)
+      setIsLeavingVisible(true)
     }, heroExampleRotationConfig.transitionDurationMs)
 
     return () => {
-      window.clearTimeout(transitionTimeoutRef.current)
-      cancelAnimationFrame(transitionFrameRef.current ?? 0)
+      cancelAnimationFrame(startFrameRef.current ?? 0)
+      window.clearTimeout(endTimeoutRef.current)
     }
-  }, [activeIndex, shownIndex])
+  }, [activeIndex])
 
   return {
     shownIndex,

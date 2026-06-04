@@ -79,7 +79,13 @@ export function CreateRoseForm({
           mimeType: draft.voiceMimeType,
           dataBase64: await blobToBase64(draft.voiceBlob),
         })
-        voiceMessageId = upload.voiceMessageId
+        const uploadedVoiceMessageId = upload?.voiceMessageId
+
+        if (!uploadedVoiceMessageId) {
+          throw new Error(t.createForm.errors.voiceUploadFailed)
+        }
+
+        voiceMessageId = uploadedVoiceMessageId
       }
 
       const checkout = await createCheckoutSession({

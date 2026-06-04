@@ -9,6 +9,7 @@
   --color-wine: #7c1f33;
   --color-wine-deep: #5e1626;
   --color-gold: #b6925a;
+  --color-rose-soft: #f9d5e5;
 }
 
 * {
@@ -56,5 +57,25 @@ body {
   color: #f5f5f4;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-example-pill-fill {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .hero-example-pill-fill {
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation-name: hero-example-pill-fill;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
 }
 

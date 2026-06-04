@@ -8,6 +8,7 @@ export interface ViewportSize {
 export function hasRoseViewportChangedSignificantly(
   previous: ViewportSize | null,
   next: ViewportSize,
+  changeRatio = 0.06,
 ): boolean {
   if (!previous) {
     return true
@@ -15,8 +16,8 @@ export function hasRoseViewportChangedSignificantly(
 
   const widthDelta = Math.abs(previous.width - next.width)
   const heightDelta = Math.abs(previous.height - next.height)
-  const widthThreshold = Math.max(previous.width, next.width) * 0.06
-  const heightThreshold = Math.max(previous.height, next.height) * 0.06
+  const widthThreshold = Math.max(previous.width, next.width) * changeRatio
+  const heightThreshold = Math.max(previous.height, next.height) * changeRatio
 
   return widthDelta > widthThreshold || heightDelta > heightThreshold
 }

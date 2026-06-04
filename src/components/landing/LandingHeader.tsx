@@ -7,9 +7,6 @@ import { productConfig } from '#/lib/product-config'
 const headerNavLinkClassName =
   'shrink-0 text-xs font-medium uppercase tracking-[0.12em] text-stone-500 transition hover:text-stone-300'
 
-const headerNavPillClassName =
-  'inline-flex shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-[10px] font-medium uppercase tracking-[0.1em] text-stone-400 transition hover:border-white/20 hover:text-stone-200 sm:text-[11px] sm:tracking-[0.12em]'
-
 export function LandingHeader() {
   const { t } = useI18n()
 
@@ -55,14 +52,6 @@ export function LandingHeader() {
             </a>
           </div>
         </div>
-
-        <nav className="-mx-1 flex justify-center gap-2 overflow-x-auto px-1 pb-3 md:hidden">
-          {navLinks.map((link) => (
-            <a className={headerNavPillClassName} href={link.href} key={link.href}>
-              {link.label}
-            </a>
-          ))}
-        </nav>
       </div>
     </header>
   )
