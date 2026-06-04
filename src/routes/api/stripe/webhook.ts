@@ -33,7 +33,7 @@ export const Route = createFileRoute('/api/stripe/webhook')({
           const session = event.data.object
 
           if (session.object === 'checkout.session') {
-            createFlowerFromCheckoutMetadata(session.id, session.metadata)
+            await createFlowerFromCheckoutMetadata(session.id, session.metadata)
           }
         }
 

@@ -1,4 +1,4 @@
-import type { CreateFlowerInput } from '#/lib/flower-types'
+import type { CreateFlowerInput, Flower } from '#/lib/flower-types'
 import {
   createFlowerRecord,
   getFlowerByStripeSessionId,
@@ -19,11 +19,11 @@ function readMetadataString(
   return typeof value === 'string' ? value : undefined
 }
 
-export function createFlowerFromCheckoutMetadata(
+export async function createFlowerFromCheckoutMetadata(
   sessionId: string,
   metadata: Record<string, unknown> | null,
-): ReturnType<typeof createFlowerRecord> | null {
-  const existingFlower = getFlowerByStripeSessionId(sessionId)
+): Promise<Flower | null> {
+  const existingFlower = await getFlowerByStripeSessionId(sessionId)
 
   if (existingFlower) {
     return existingFlower
@@ -63,10 +63,10 @@ export function createFlowerFromCheckoutMetadata(
     recipientPhone,
   })
 
-  const flower = createFlowerRecord(input, sessionId, voiceMessageId)
+  const flower = await createFlowerRecord(input, sessionId, voiceMessageId)
 
   if (voiceMessageId) {
-    linkFlowerVoiceMessage(flower.id, voiceMessageId)
+    await linkFlowerVoiceMessage(flower.id, voiceMessageId)
   }
 
   return flower

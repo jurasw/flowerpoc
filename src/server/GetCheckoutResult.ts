@@ -25,7 +25,7 @@ function buildCheckoutResult(flower: {
 async function ensureFlowerFromSession(
   sessionId: string,
 ): Promise<CheckoutResult | null> {
-  const existingFlower = getFlowerByStripeSessionId(sessionId)
+  const existingFlower = await getFlowerByStripeSessionId(sessionId)
 
   if (existingFlower) {
     return buildCheckoutResult(existingFlower)
@@ -38,7 +38,10 @@ async function ensureFlowerFromSession(
     return null
   }
 
-  const flower = createFlowerFromCheckoutMetadata(session.id, session.metadata)
+  const flower = await createFlowerFromCheckoutMetadata(
+    session.id,
+    session.metadata,
+  )
 
   if (!flower) {
     return null

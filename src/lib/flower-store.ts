@@ -1,58 +1,69 @@
+import { cardRowToFlower, flowerToCardInsert } from '#/lib/card-mapper'
 import type { CreateFlowerInput, Flower } from '#/lib/flower-types'
+import { getSupabaseServerClient } from '#/lib/supabase-server'
 
-const flowers = new Map<string, Flower>()
-
-const SEED_FLOWERS: Flower[] = [
-  {
-    id: 'poc',
-    senderName: 'Janusz',
-    recipientName: 'Barbary',
-    quote: 'kocham cię bardzo, z tobą Basiu i na łóżku i na sianie, wszystko jedno',
-    senderEmail: 'janusz@example.com',
-    deliveryMethod: 'link',
-    createdAt: '2026-05-30T16:10:36.850Z',
-  },
-]
-
-for (const flower of SEED_FLOWERS) {
-  flowers.set(flower.id, flower)
-}
-
-export function createFlowerRecord(
+export async function createFlowerRecord(
   input: CreateFlowerInput,
   stripeSessionId?: string,
   voiceMessageId?: string,
-): Flower {
-  const flower: Flower = {
-    id: crypto.randomUUID(),
-    senderName: input.senderName.trim(),
-    recipientName: input.recipientName.trim(),
-    quote: input.quote.trim(),
-    senderEmail: input.senderEmail,
-    deliveryMethod: input.deliveryMethod,
-    recipientEmail: input.recipientEmail,
-    recipientPhone: input.recipientPhone,
-    createdAt: new Date().toISOString(),
-    stripeSessionId,
-    voiceMessageId,
+): Promise<Flower> {
+  const supabase = getSupabaseServerClient()
+  const id = crypto.randomUUID()
+  const createdAt = new Date().toISOString()
+
+  const { data, error } = await supabase
+    .from('cards')
+    .insert(
+      flowerToCardInsert({
+        id,
+        createdAt,
+        input,
+        stripeSessionId,
+        voiceMessageId,
+      }),
+    )
+    .select()
+    .single()
+
+  if (error || !data) {
+    throw new Error(
+      `Failed to create flower: ${error?.message ?? 'Unknown error'}`,
+    )
   }
 
-  flowers.set(flower.id, flower)
-  return flower
+  return cardRowToFlower(data)
 }
 
-export function getFlowerById(id: string): Flower | undefined {
-  return flowers.get(id)
+export async function getFlowerById(id: string): Promise<Flower | undefined> {
+  const supabase = getSupabaseServerClient()
+
+  const { data, error } = await supabase
+    .from('cards')
+    .select()
+    .eq('id', id)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Failed to get flower: ${error.message}`)
+  }
+
+  return data ? cardRowToFlower(data) : undefined
 }
 
-export function getFlowerByStripeSessionId(
+export async function getFlowerByStripeSessionId(
   stripeSessionId: string,
-): Flower | undefined {
-  for (const flower of flowers.values()) {
-    if (flower.stripeSessionId === stripeSessionId) {
-      return flower
-    }
+): Promise<Flower | undefined> {
+  const supabase = getSupabaseServerClient()
+
+  const { data, error } = await supabase
+    .from('cards')
+    .select()
+    .eq('stripe_session_id', stripeSessionId)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Failed to get flower by session: ${error.message}`)
   }
 
-  return undefined
+  return data ? cardRowToFlower(data) : undefined
 }

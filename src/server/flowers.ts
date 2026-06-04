@@ -7,7 +7,7 @@ import { validateCreateFlowerInput } from '#/lib/validate-flower-input'
 export const createFlower = createServerFn({ method: 'POST' })
   .inputValidator((data: CreateFlowerInput) => validateCreateFlowerInput(data))
   .handler(async ({ data }): Promise<CreateFlowerResult> => {
-    const flower = createFlowerRecord(data)
+    const flower = await createFlowerRecord(data)
 
     return {
       id: flower.id,
@@ -24,5 +24,5 @@ export const getFlower = createServerFn({ method: 'GET' })
     return { id: data.id.trim() }
   })
   .handler(async ({ data }): Promise<Flower | null> => {
-    return getFlowerById(data.id) ?? null
+    return (await getFlowerById(data.id)) ?? null
   })
