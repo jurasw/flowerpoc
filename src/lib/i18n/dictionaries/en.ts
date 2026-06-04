@@ -21,6 +21,43 @@ export const en = {
       'A hand-rendered digital rose paired with a message meant only for them. Compose, pay once, and share a private link they will never forget.',
     primaryCta: 'Create your rose',
     secondaryCta: 'See how it works',
+    examples: {
+      eyebrow: 'Preview',
+      title: 'What they receive',
+      demoVoiceHint: 'Sample',
+      items: [
+        {
+          id: 'anniversary',
+          tabLabel: 'Anniversary',
+          recipientName: 'Emma',
+          senderName: 'James',
+          quote:
+            'Every year with you feels like the first — thank you for choosing me, again and again.',
+          hasVoice: true,
+          voiceDurationSeconds: 18,
+          voicePeaksSeed: 1.2,
+        },
+        {
+          id: 'birthday',
+          tabLabel: 'Birthday',
+          recipientName: 'Mom',
+          senderName: 'Kate',
+          quote:
+            'Happy birthday. You taught me how to love quietly and fiercely — this rose is for you.',
+          hasVoice: false,
+        },
+        {
+          id: 'thank-you',
+          tabLabel: 'Thank you',
+          recipientName: 'Dad',
+          senderName: 'Michael',
+          quote: 'Thank you for always showing up. I mean it, every single time.',
+          hasVoice: true,
+          voiceDurationSeconds: 12,
+          voicePeaksSeed: 2.7,
+        },
+      ],
+    },
   },
   valueStrip: {
     privateLink: {

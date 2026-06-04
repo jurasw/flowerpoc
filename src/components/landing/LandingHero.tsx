@@ -1,14 +1,15 @@
 import { memo } from 'react'
 
+import { LandingHeroRoseExamples } from '#/components/landing/LandingHeroRoseExamples'
 import { RoseScene } from '#/components/RoseScene'
 import { useI18n } from '#/lib/i18n/i18n-context'
 
 const heroRosePanelHeightClass =
-  'h-[min(100vw-3rem,28rem)] sm:h-[min(100vw-3rem,32rem)] lg:h-[34rem]'
+  'h-[min(100vw-3rem,36rem)] sm:h-[38rem] lg:h-[42rem]'
 
 const heroRoseFrameSettings = {
-  fillRatio: 0.78,
-  verticalFocus: 0.58,
+  fillRatio: 0.7,
+  verticalFocus: 0.38,
 }
 
 function LandingHeroCopy() {
@@ -44,6 +45,10 @@ function LandingHeroCopy() {
           {t.hero.secondaryCta}
         </a>
       </div>
+
+      <p className="mt-8 hidden max-w-md text-sm leading-relaxed text-stone-500 lg:block">
+        {t.hero.examples.title}
+      </p>
     </div>
   )
 }
@@ -51,15 +56,14 @@ function LandingHeroCopy() {
 const LandingHeroRosePanel = memo(function LandingHeroRosePanel() {
   return (
     <div className="relative mx-auto w-full max-w-lg shrink-0 [contain:layout] lg:mx-0 lg:max-w-none">
-      <div
-        className={`relative ${heroRosePanelHeightClass} overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#1a1012] via-[#120a0c] to-[#0a0608] shadow-2xl shadow-black/60 ring-1 ring-white/10`}
-      >
-        <div className="pointer-events-none absolute inset-x-10 -top-24 h-64 rounded-full bg-wine/25 blur-[110px]" />
+      <div className={`relative ${heroRosePanelHeightClass}`}>
         <RoseScene
           className="absolute inset-0"
           deferUntilVisible
           frameSettings={heroRoseFrameSettings}
         />
+
+        <LandingHeroRoseExamples className="absolute inset-x-0 bottom-0 z-10" />
       </div>
     </div>
   )
@@ -74,7 +78,7 @@ export function LandingHero() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(ellipse_at_top,_rgba(124,31,51,0.22)_0%,_transparent_70%)]" />
 
       <div className="relative mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
-        <div className="flex items-center justify-center lg:min-h-[34rem] lg:justify-start">
+        <div className="flex items-center justify-center lg:min-h-[42rem] lg:justify-start">
           <LandingHeroCopy />
         </div>
         <LandingHeroRosePanel />

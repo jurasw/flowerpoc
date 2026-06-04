@@ -4,6 +4,10 @@ import type { RestoredVoiceRecording } from '#/lib/create-rose-form-draft-types'
 import { pickRecorderMimeType } from '#/lib/pick-recorder-mime-type'
 import type { VoiceRecorderError } from '#/lib/voice-recorder-error'
 import { voiceMessageConfig } from '#/lib/voice-message-config'
+import {
+  createVoiceRecordingAnalyser,
+  type VoiceRecordingAnalyser,
+} from '#/lib/voice-recording-analyser'
 
 interface UseVoiceRecorderOptions {
   onError: (error: VoiceRecorderError) => void
@@ -14,6 +18,7 @@ interface UseVoiceRecorderResult {
   recordedMimeType: string | null
   isRecording: boolean
   recordingSeconds: number
+  recordingPeaks: number[]
   canRecord: boolean
   startRecording: () => Promise<void>
   stopRecording: () => void
@@ -28,11 +33,14 @@ export function useVoiceRecorder({
   const [recordedMimeType, setRecordedMimeType] = useState<string | null>(null)
   const [isRecording, setIsRecording] = useState(false)
   const [recordingSeconds, setRecordingSeconds] = useState(0)
+  const [recordingPeaks, setRecordingPeaks] = useState<number[]>([])
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const mediaStreamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const recordingTimerRef = useRef<number | null>(null)
+  const recordingAnalyserRef = useRef<VoiceRecordingAnalyser | null>(null)
+  const recordingAnimationFrameRef = useRef<number | null>(null)
 
   const recorderMimeType = pickRecorderMimeType()
   const canRecord = recorderMimeType !== undefined
@@ -53,6 +61,34 @@ export function useVoiceRecorder({
       recordingTimerRef.current = null
     }
   }, [])
+
+  const stopRecordingAnalyser = useCallback(() => {
+    if (recordingAnimationFrameRef.current !== null) {
+      window.cancelAnimationFrame(recordingAnimationFrameRef.current)
+      recordingAnimationFrameRef.current = null
+    }
+
+    if (recordingAnalyserRef.current) {
+      recordingAnalyserRef.current.teardown()
+      recordingAnalyserRef.current = null
+    }
+
+    setRecordingPeaks([])
+  }, [])
+
+  const startRecordingAnalyser = useCallback((stream: MediaStream) => {
+    stopRecordingAnalyser()
+
+    const analyser = createVoiceRecordingAnalyser(stream)
+    recordingAnalyserRef.current = analyser
+
+    const sampleFrame = (): void => {
+      setRecordingPeaks(analyser.samplePeaks())
+      recordingAnimationFrameRef.current = window.requestAnimationFrame(sampleFrame)
+    }
+
+    recordingAnimationFrameRef.current = window.requestAnimationFrame(sampleFrame)
+  }, [stopRecordingAnalyser])
 
   const clearRecording = useCallback(() => {
     setRecordedBlob(null)
@@ -114,6 +150,7 @@ export function useVoiceRecorder({
 
       recorder.onerror = () => {
         clearRecordingTimer()
+        stopRecordingAnalyser()
         setIsRecording(false)
         stopMediaStream()
         chunksRef.current = []
@@ -123,6 +160,7 @@ export function useVoiceRecorder({
 
       recorder.onstop = () => {
         clearRecordingTimer()
+        stopRecordingAnalyser()
         setIsRecording(false)
         stopMediaStream()
 
@@ -141,10 +179,12 @@ export function useVoiceRecorder({
       }
 
       recorder.start(250)
+      startRecordingAnalyser(stream)
       setIsRecording(true)
       setRecordingSeconds(0)
       startRecordingTimer()
     } catch {
+      stopRecordingAnalyser()
       stopMediaStream()
       onError('microphoneRequired')
     }
@@ -153,27 +193,31 @@ export function useVoiceRecorder({
     clearRecordingTimer,
     onError,
     recorderMimeType,
+    startRecordingAnalyser,
     startRecordingTimer,
     stopMediaStream,
     stopRecording,
+    stopRecordingAnalyser,
   ])
 
   useEffect(() => {
     return () => {
       clearRecordingTimer()
+      stopRecordingAnalyser()
       stopMediaStream()
 
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
         mediaRecorderRef.current.stop()
       }
     }
-  }, [clearRecordingTimer, stopMediaStream])
+  }, [clearRecordingTimer, stopMediaStream, stopRecordingAnalyser])
 
   return {
     recordedBlob,
     recordedMimeType,
     isRecording,
     recordingSeconds,
+    recordingPeaks,
     canRecord,
     startRecording,
     stopRecording,

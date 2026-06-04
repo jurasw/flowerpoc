@@ -23,6 +23,44 @@ export const pl: Dictionary = {
       'Ręcznie wyrenderowana cyfrowa róża wraz z wiadomością przeznaczoną tylko dla tej jednej osoby. Skomponuj, zapłać raz i udostępnij prywatny link, którego nigdy nie zapomną.',
     primaryCta: 'Stwórz swoją różę',
     secondaryCta: 'Zobacz, jak to działa',
+    examples: {
+      eyebrow: 'Podgląd',
+      title: 'Co zobaczy ta osoba',
+      demoVoiceHint: 'Przykład',
+      items: [
+        {
+          id: 'anniversary',
+          tabLabel: 'Rocznica',
+          recipientName: 'Anna',
+          senderName: 'Jakub',
+          quote:
+            'Każdy rok z Tobą jest jak pierwszy — dziękuję, że znowu mnie wybrałaś.',
+          hasVoice: true,
+          voiceDurationSeconds: 18,
+          voicePeaksSeed: 1.2,
+        },
+        {
+          id: 'birthday',
+          tabLabel: 'Urodziny',
+          recipientName: 'Mamo',
+          senderName: 'Kasia',
+          quote:
+            'Wszystkiego najlepszego. Nauczyłaś mnie kochać cicho i mocno — ta róża jest dla Ciebie.',
+          hasVoice: false,
+        },
+        {
+          id: 'thank-you',
+          tabLabel: 'Podziękowanie',
+          recipientName: 'Tato',
+          senderName: 'Piotr',
+          quote:
+            'Dziękuję, że zawsze byłeś. Naprawdę — za każdym razem.',
+          hasVoice: true,
+          voiceDurationSeconds: 12,
+          voicePeaksSeed: 2.7,
+        },
+      ],
+    },
   },
   valueStrip: {
     privateLink: {

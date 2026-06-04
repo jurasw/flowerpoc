@@ -6,6 +6,7 @@ interface VoiceWaveformBarsProps {
   peaks: number[]
   progressRatio: number
   isDisabled?: boolean
+  isLive?: boolean
   onSeek: (ratio: number) => void
 }
 
@@ -26,6 +27,7 @@ export function VoiceWaveformBars({
   peaks,
   progressRatio,
   isDisabled = false,
+  isLive = false,
   onSeek,
 }: VoiceWaveformBarsProps) {
   const trackRef = useRef<HTMLDivElement | null>(null)
@@ -110,9 +112,9 @@ export function VoiceWaveformBars({
             key={`wave-bar-${index}`}
           >
             <span
-              className={`block w-full max-w-[3px] rounded-full transition-colors ${
-                isPlayed ? 'bg-rose-300' : 'bg-white/20'
-              }`}
+              className={`block w-full max-w-[3px] rounded-full ${
+                isLive ? 'transition-[height] duration-75 ease-out' : 'transition-colors'
+              } ${isPlayed ? 'bg-rose-300' : 'bg-white/20'}`}
               style={{ height: `${heightPercent}%` }}
             />
           </div>

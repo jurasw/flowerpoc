@@ -1,6 +1,7 @@
-import { Mic, Square, Trash2 } from 'lucide-react'
+import { Mic, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useRef } from 'react'
 
+import { VoiceRecordingWaveform } from '#/components/voice/VoiceRecordingWaveform'
 import { VoiceWaveformPlayer } from '#/components/voice/VoiceWaveformPlayer'
 import { useVoiceRecorder } from '#/hooks/useVoiceRecorder'
 import type { RestoredVoiceRecording } from '#/lib/create-rose-form-draft-types'
@@ -13,17 +14,6 @@ interface VoiceMessageRecorderProps {
   onRecordingChange: (blob: Blob | null, mimeType: string | null) => void
   restoredRecording?: RestoredVoiceRecording | null
 }
-
-function formatRecordingTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainder = seconds % 60
-  return `${minutes}:${remainder.toString().padStart(2, '0')}`
-}
-
-const recordingPillClassName =
-  'rounded-full border border-rose-400/30 bg-rose-500/10 text-rose-200'
-
-const recordingStopButtonClassName = `${recordingPillClassName} inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition hover:bg-rose-500/20`
 
 export function VoiceMessageRecorder({
   onError,
@@ -89,23 +79,12 @@ export function VoiceMessageRecorder({
       </div>
 
       {voice.isRecording ? (
-        <div className="mt-3 flex items-center gap-2">
-          <span
-            className={`${recordingPillClassName} px-3 py-1 text-xs font-medium`}
-          >
-            {t.createForm.voice.recording(
-              formatRecordingTime(voice.recordingSeconds),
-            )}
-          </span>
-          <button
-            aria-label={t.createForm.voice.stop}
-            className={recordingStopButtonClassName}
-            onClick={handleStop}
-            type="button"
-          >
-            <Square className="size-3.5 fill-current" />
-          </button>
-        </div>
+        <VoiceRecordingWaveform
+          onStop={handleStop}
+          peaks={voice.recordingPeaks}
+          recordingSeconds={voice.recordingSeconds}
+          stopLabel={t.createForm.voice.stop}
+        />
       ) : null}
 
       {!voice.canRecord ? (
