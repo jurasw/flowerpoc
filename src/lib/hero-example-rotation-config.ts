@@ -1,4 +1,4 @@
 export const heroExampleRotationConfig = {
   intervalMs: 6500,
-  fadeDurationMs: 700,
+  transitionDurationMs: 800,
 }

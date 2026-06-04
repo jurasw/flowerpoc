@@ -57,15 +57,17 @@ const LandingHeroRosePanel = memo(function LandingHeroRosePanel() {
   return (
     <div className="relative mx-auto w-full max-w-lg shrink-0 lg:mx-0 lg:max-w-none">
       <div className="flex flex-col gap-4 lg:relative lg:h-[42rem] lg:gap-0">
-        <div className={`relative ${heroRoseViewportHeightClass}`}>
+        <div
+          className={`relative z-0 isolate ${heroRoseViewportHeightClass}`}
+        >
           <RoseScene
-            className="absolute inset-0"
+            className="pointer-events-none absolute inset-0 z-0"
             deferUntilVisible
             frameSettings={heroRoseFrameSettings}
           />
         </div>
 
-        <LandingHeroRoseExamples className="relative z-10 shrink-0 lg:absolute lg:inset-x-0 lg:bottom-0" />
+        <LandingHeroRoseExamples className="relative z-20 shrink-0 lg:absolute lg:inset-x-0 lg:bottom-0" />
       </div>
     </div>
   )
