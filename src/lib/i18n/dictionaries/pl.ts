@@ -2,7 +2,7 @@ import type { Dictionary } from '#/lib/i18n/dictionaries/en'
 
 export const pl: Dictionary = {
   meta: {
-    rootTitle: 'Cyfrowa Róża',
+    rootTitle: 'Cyfrowa Laurka',
     homeTitle: (productName: string): string =>
       `${productName} — Wyślij różę, która trwa`,
     homeDescription:
@@ -18,9 +18,9 @@ export const pl: Dictionary = {
   },
   hero: {
     titleLineOne: 'Wyślij różę,',
-    titleLineTwo: 'która trwa.',
+    titleLineTwo: 'która nie zwiędnie.',
     description:
-      'Ręcznie wyrenderowana cyfrowa róża wraz z wiadomością przeznaczoną tylko dla tej jednej osoby. Skomponuj, zapłać raz i udostępnij prywatny link, którego nigdy nie zapomną.',
+      'Piękna cyfrowa róża wraz z wiadomością przeznaczoną dla wyjątkowej osoby.',
     primaryCta: 'Stwórz swoją różę',
     secondaryCta: 'Zobacz, jak to działa',
     examples: {
@@ -78,55 +78,55 @@ export const pl: Dictionary = {
   },
   howItWorks: {
     eyebrow: 'Jak to działa',
-    title: 'Dwa kroki do czegoś niezapomnianego',
+    title: 'Prostota ponad wszystko',
     steps: {
       compose: {
-        title: 'Skomponuj',
+        title: 'Skomponuj swoją laurkę',
         description:
-          'Wpisz jej lub jego imię, swoje imię oraz wiadomość, którą przeczyta tylko ta osoba.',
+          'Do pięknej róży dołącz swoją prywatną wiadomość od serca - głosową lub tekstową.',
       },
       share: {
-        title: 'Udostępnij',
+        title: 'My zajmiemy się resztą',
         description:
-          'Skopiuj prywatny link i wyślij go SMS-em, e-mailem lub w dowolny inny sposób.',
+          'Wyślemy laurkę na wskazany adres e-mail, numer telefonu lub dostarczymy kod QR do wydruku.',
       },
     },
   },
   features: {
     eyebrow: 'Funkcje',
-    title: 'Coś więcej niż wiadomość',
+    title: 'Prezent dla kogoś, kto zasługuje na więcej niż SMS',
     subtitle:
-      'Cyfrowy prezent, który jest przemyślany, piękny i głęboko osobisty.',
+      'Coś więcej niż wiadomość na messengerze.',
     rose: {
-      title: 'Ręcznie wyrenderowana róża 3D',
+      title: 'Piękny trójwymiarowy model prawdziwej róży',
       description:
-        'Piękna róża, którą można obracać i podziwiać z każdej strony w przeglądarce.',
+        'Cyfrowa róża, którą można obracać i podziwiać z każdej strony w przeglądarce.',
     },
     message: {
-      title: 'Wiadomość tylko dla tej osoby',
+      title: 'Wiadomość od serca',
       description:
-        'Twoje słowa pojawiają się na eleganckiej karcie pod różą — intymnie i osobiście.',
+        'Twoje unikalne życzenia pojawiają się na eleganckiej karcie pod różą.',
     },
     lasting: {
-      title: 'Zawsze dostępna',
+      title: 'Ponadczasowy prezent',
       description:
-        'Twój link i róża zostają — wracaj kiedy chcesz, bez pośpiechu.',
+        'Róża nie zwiędnie, a kartka nie pożółknie. Laurka dostępna będzie przez lata.',
     },
     link: {
-      title: 'Jeden prywatny link',
+      title: 'Prosty dostęp',
       description:
-        'Nie trzeba nic instalować. Wyślij jeden link, a róża pojawi się natychmiast.',
+        'Nie musisz nic instalować. Wyślemy laurkę w formie e-mail, SMS lub kodu QR.',
     },
   },
   pricing: {
     eyebrow: 'Cennik',
-    title: 'Jedna róża. Jedna chwila.',
+    title: 'Cyfrowy prezent dla kogoś, kto zasługuje na więcej niż SMS.',
     oneTimePayment: 'Płatność jednorazowa',
     included: {
-      rose: 'Jedna spersonalizowana cyfrowa róża 3D',
+      rose: 'Trójwymiarowy model prawdziwej róży',
       card: 'Karta z prywatną wiadomością',
-      link: 'Link do udostępnienia — bez aplikacji',
-      lasting: 'Bezterminowy dostęp do Twojej róży',
+      link: 'Gwarancja dostarczenia wiadomości',
+      lasting: 'Dostępna na lata',
     },
     cta: 'Stwórz swoją różę',
   },
@@ -135,7 +135,7 @@ export const pl: Dictionary = {
   },
   createForm: {
     eyebrow: 'Stwórz',
-    title: 'Skomponuj swoją różę',
+    title: 'Skomponuj swoją laurkę',
     subtitle:
       'Uzupełnij poniższe pola. Po płatności otrzymasz prywatny link do udostępnienia.',
     canceledNotice:
@@ -205,7 +205,7 @@ export const pl: Dictionary = {
     preview: {
       label: 'Podgląd',
       caption:
-        'Przeciągnij, aby obrócić. Twoja róża pozostaje dostępna tak długo, jak zachowasz link.',
+        'Trójwymiarowy model róży, który można obracać i podziwiać z każdej strony w przeglądarce.',
     },
   },
   checkoutSuccess: {
@@ -245,7 +245,7 @@ export const pl: Dictionary = {
     cta: 'Wyślij nową różę',
   },
   checkout: {
-    productName: 'Cyfrowa Róża',
+    productName: 'Cyfrowa Laurka',
     productDescription:
       'Spersonalizowana cyfrowa róża z prywatną wiadomością. Twoja na zawsze.',
   },
