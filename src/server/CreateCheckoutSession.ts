@@ -3,8 +3,11 @@ import { createServerFn } from '@tanstack/react-start'
 import type { CreateFlowerInput } from '#/lib/flower-types'
 import { getDictionary } from '#/lib/i18n/dictionaries'
 import { type Locale, resolveLocale } from '#/lib/i18n/locale'
-import { productConfig } from '#/lib/product-config'
-import { getAppUrl, getStripeClient } from '#/lib/stripe-client'
+import {
+  getAppUrl,
+  getStripeClient,
+  getStripePriceId,
+} from '#/lib/stripe-client'
 import { validateCreateFlowerInput } from '#/lib/validate-flower-input'
 import { getVoiceMessageById } from '#/lib/voice-message-store'
 
@@ -50,14 +53,7 @@ export default createServerFn({ method: 'POST' })
       line_items: [
         {
           quantity: 1,
-          price_data: {
-            currency: productConfig.currency,
-            unit_amount: productConfig.priceCents,
-            product_data: {
-              name: t.checkout.productName,
-              description: t.checkout.productDescription,
-            },
-          },
+          price: getStripePriceId(),
         },
       ],
       metadata: {

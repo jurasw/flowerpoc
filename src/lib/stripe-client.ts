@@ -24,6 +24,16 @@ export function getAppUrl(): string {
   return appUrl.replace(/\/$/, '')
 }
 
+export function getStripePriceId(): string {
+  const priceId = process.env.STRIPE_PRICE_ID
+
+  if (!priceId) {
+    throw new Error('STRIPE_PRICE_ID is not configured.')
+  }
+
+  return priceId
+}
+
 export function getStripeWebhookSecret(): string {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 

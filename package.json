@@ -16,7 +16,9 @@
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
-    "check": "biome check"
+    "check": "biome check",
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe/webhook --events checkout.session.completed,checkout.session.async_payment_succeeded",
+    "stripe:register-webhook": "bash scripts/register-stripe-webhook.sh"
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",

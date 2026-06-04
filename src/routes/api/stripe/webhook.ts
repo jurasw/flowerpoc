@@ -29,11 +29,14 @@ export const Route = createFileRoute('/api/stripe/webhook')({
           return json({ error: 'Invalid webhook signature.' }, { status: 400 })
         }
 
-        if (event.type === 'checkout.session.completed') {
+        if (
+          event.type === 'checkout.session.completed' ||
+          event.type === 'checkout.session.async_payment_succeeded'
+        ) {
           const session = event.data.object
 
           if (session.object === 'checkout.session') {
-            await createFlowerFromCheckoutMetadata(session.id, session.metadata)
+            await fulfillPaidCheckoutSession(session)
           }
         }
 
@@ -42,3 +45,16 @@ export const Route = createFileRoute('/api/stripe/webhook')({
     },
   },
 })
+
+async function fulfillPaidCheckoutSession(
+  session: Stripe.Checkout.Session,
+): Promise<void> {
+  if (session.payment_status !== 'paid') {
+    return
+  }
+
+  await createFlowerFromCheckoutMetadata(
+    session.id,
+    session.metadata ?? null,
+  )
+}
