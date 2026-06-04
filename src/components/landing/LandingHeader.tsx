@@ -1,6 +1,5 @@
 import { Flower2 } from 'lucide-react'
 
-import { LanguageSwitcher } from '#/components/LanguageSwitcher'
 import { useI18n } from '#/lib/i18n/i18n-context'
 import { productConfig } from '#/lib/product-config'
 
@@ -43,7 +42,6 @@ export function LandingHeader() {
           </nav>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <LanguageSwitcher />
             <a
               className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-lg bg-wine px-3 py-2 text-[10px] font-medium tracking-wide text-white transition hover:bg-wine-deep sm:px-4 sm:text-xs"
               href="#create"

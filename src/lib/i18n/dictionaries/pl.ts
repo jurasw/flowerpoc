@@ -210,15 +210,16 @@ export const pl: Dictionary = {
   },
   checkoutSuccess: {
     title: 'Twoja róża jest gotowa.',
-    subtitleLink: 'Skopiuj poniższy link lub zeskanuj kod QR.',
-    subtitleEmail: (email: string): string =>
-      `Wyślij poniższy link na adres ${email}.`,
-    subtitlePhone: (phone: string): string =>
-      `Wyślij poniższy link SMS-em na numer ${phone}.`,
+    emailSent: (email: string): string => `Email wysłany na adres ${email}`,
+    smsSent: (phone: string): string => `SMS wysłany na numer ${phone}`,
+    linkSubtitle: 'Skopiuj poniższy link lub pobierz kod QR.',
     copy: 'Kopiuj link',
     copied: 'Skopiowano',
     qrLabel: 'Zeskanuj, aby otworzyć różę',
-    previewLink: 'Zobacz, co zobaczy odbiorca →',
+    downloadQr: 'Pobierz kod QR',
+    openRose: 'Otwórz stronę róży',
+    finalizing: 'Płatność otrzymana. Przygotowujemy Twoją różę…',
+    previewEyebrow: 'Podgląd odbiorcy',
   },
   flower: {
     forRecipient: (name: string): string => `Dla ${name}`,

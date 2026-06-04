@@ -8,9 +8,13 @@ import getVoiceMessageAudio from '#/server/GetVoiceMessageAudio'
 
 interface VoiceMessagePlayerProps {
   voiceMessageId: string
+  className?: string
 }
 
-export function VoiceMessagePlayer({ voiceMessageId }: VoiceMessagePlayerProps) {
+export function VoiceMessagePlayer({
+  voiceMessageId,
+  className = 'mt-7',
+}: VoiceMessagePlayerProps) {
   const { t } = useI18n()
   const getVoiceMessageAudioFn = useServerFn(getVoiceMessageAudio)
   const [isLoading, setIsLoading] = useState(true)
@@ -68,17 +72,21 @@ export function VoiceMessagePlayer({ voiceMessageId }: VoiceMessagePlayerProps) 
   }
 
   return (
-    <div className="relative z-20 mt-7 rounded-2xl border border-white/10 bg-white/[0.03] p-4 pointer-events-auto">
+    <div
+      className={`relative z-20 rounded-2xl border border-white/10 bg-white/[0.03] p-4 pointer-events-auto ${className}`}
+    >
       <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold/80">
         {t.flower.voice.label}
       </p>
-      <VoiceWaveformPlayer
-        audioBlob={isLoading ? null : audioBlob}
-        loadingLabel={t.flower.voice.loading}
-        onPlaybackError={handleLoadError}
-        pauseLabel={t.flower.voice.pause}
-        playLabel={t.flower.voice.play}
-      />
+      <div className="mt-5">
+        <VoiceWaveformPlayer
+          audioBlob={isLoading ? null : audioBlob}
+          loadingLabel={t.flower.voice.loading}
+          onPlaybackError={handleLoadError}
+          pauseLabel={t.flower.voice.pause}
+          playLabel={t.flower.voice.play}
+        />
+      </div>
     </div>
   )
 }

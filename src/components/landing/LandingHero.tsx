@@ -1,16 +1,5 @@
-import { memo } from 'react'
-
-import { LandingHeroRoseExamples } from '#/components/landing/LandingHeroRoseExamples'
-import { RoseScene } from '#/components/RoseScene'
+import { LandingHeroPhonePanel } from '#/components/landing/LandingHeroPhonePanel'
 import { useI18n } from '#/lib/i18n/i18n-context'
-
-const heroRoseViewportHeightClass =
-  'h-[min(72vw,22rem)] w-full sm:h-[26rem] lg:h-[42rem]'
-
-const heroRoseFrameSettings = {
-  fillRatio: 0.7,
-  verticalFocus: 0.38,
-}
 
 function LandingHeroCopy() {
   const { t } = useI18n()
@@ -45,47 +34,25 @@ function LandingHeroCopy() {
           {t.hero.secondaryCta}
         </a>
       </div>
-
-      <p className="mt-8 hidden max-w-md text-sm leading-relaxed text-stone-500 lg:block">
-        {t.hero.examples.title}
-      </p>
     </div>
   )
 }
 
-const LandingHeroRosePanel = memo(function LandingHeroRosePanel() {
-  return (
-    <div className="relative mx-auto w-full max-w-lg shrink-0 lg:mx-0 lg:max-w-none">
-      <div className="flex flex-col gap-4 lg:relative lg:h-[42rem] lg:gap-0">
-        <div
-          className={`relative z-0 isolate ${heroRoseViewportHeightClass}`}
-        >
-          <RoseScene
-            className="pointer-events-none absolute inset-0 z-0"
-            deferUntilVisible
-            frameSettings={heroRoseFrameSettings}
-          />
-        </div>
-
-        <LandingHeroRoseExamples className="relative z-20 shrink-0 lg:absolute lg:inset-x-0 lg:bottom-0" />
-      </div>
-    </div>
-  )
-})
-
 export function LandingHero() {
   return (
     <section
-      className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20"
+      className="relative overflow-x-hidden px-4 pb-20 pt-12 sm:px-6 sm:pb-24 sm:pt-16 lg:pb-28 lg:pt-20"
       id="top"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(ellipse_at_top,_rgba(124,31,51,0.22)_0%,_transparent_70%)]" />
 
-      <div className="relative mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
-        <div className="flex items-center justify-center lg:min-h-[42rem] lg:justify-start">
+      <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
+        <div className="flex items-center justify-center self-center lg:justify-start">
           <LandingHeroCopy />
         </div>
-        <LandingHeroRosePanel />
+        <div className="flex justify-center lg:-mt-8">
+          <LandingHeroPhonePanel />
+        </div>
       </div>
     </section>
   )

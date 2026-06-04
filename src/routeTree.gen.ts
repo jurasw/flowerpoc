@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FlowerIdRouteImport } from './routes/flower/$id'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as ApiVoiceMessagesPendingRouteImport } from './routes/api/voice-messages/pending'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
 import { Route as ApiCheckoutSessionRouteImport } from './routes/api/checkout/session'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const FlowerIdRoute = FlowerIdRouteImport.update({
   id: '/flower/$id',
   path: '/flower/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout/success',
+  path: '/checkout/success',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiVoiceMessagesPendingRoute = ApiVoiceMessagesPendingRouteImport.update({
@@ -49,6 +55,7 @@ const ApiCheckoutResultRoute = ApiCheckoutResultRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/flower/$id': typeof FlowerIdRoute
   '/api/checkout/result': typeof ApiCheckoutResultRoute
   '/api/checkout/session': typeof ApiCheckoutSessionRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/flower/$id': typeof FlowerIdRoute
   '/api/checkout/result': typeof ApiCheckoutResultRoute
   '/api/checkout/session': typeof ApiCheckoutSessionRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/flower/$id': typeof FlowerIdRoute
   '/api/checkout/result': typeof ApiCheckoutResultRoute
   '/api/checkout/session': typeof ApiCheckoutSessionRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/checkout/success'
     | '/flower/$id'
     | '/api/checkout/result'
     | '/api/checkout/session'
@@ -84,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/checkout/success'
     | '/flower/$id'
     | '/api/checkout/result'
     | '/api/checkout/session'
@@ -92,6 +103,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/checkout/success'
     | '/flower/$id'
     | '/api/checkout/result'
     | '/api/checkout/session'
@@ -101,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   FlowerIdRoute: typeof FlowerIdRoute
   ApiCheckoutResultRoute: typeof ApiCheckoutResultRoute
   ApiCheckoutSessionRoute: typeof ApiCheckoutSessionRoute
@@ -122,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/flower/$id'
       fullPath: '/flower/$id'
       preLoaderRoute: typeof FlowerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/checkout/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/voice-messages/pending': {
@@ -157,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   FlowerIdRoute: FlowerIdRoute,
   ApiCheckoutResultRoute: ApiCheckoutResultRoute,
   ApiCheckoutSessionRoute: ApiCheckoutSessionRoute,

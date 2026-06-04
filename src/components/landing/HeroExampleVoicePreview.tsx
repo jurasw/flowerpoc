@@ -14,8 +14,9 @@ interface HeroExampleVoicePreviewProps {
   label: string
   playLabel: string
   pauseLabel: string
-  demoHint: string
+  demoHint?: string
   isMilky?: boolean
+  isRecipientStyle?: boolean
 }
 
 export function HeroExampleVoicePreview({
@@ -26,9 +27,10 @@ export function HeroExampleVoicePreview({
   pauseLabel,
   demoHint,
   isMilky = false,
+  isRecipientStyle = false,
 }: HeroExampleVoicePreviewProps) {
   const [isPlaying, setIsPlaying] = useState(false)
-  const [progressRatio, setProgressRatio] = useState(0.18)
+  const [progressRatio, setProgressRatio] = useState(0)
 
   const togglePlayback = useCallback(() => {
     setIsPlaying((wasPlaying) => {
@@ -72,6 +74,41 @@ export function HeroExampleVoicePreview({
 
   const playButtonLabel = isPlaying ? pauseLabel : playLabel
 
+  if (isRecipientStyle) {
+    return (
+      <div className="relative z-20 mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 pointer-events-auto">
+        <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-gold/80">
+          {label}
+        </p>
+        <div className="mt-5 grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3">
+          <VoiceWaveformIconButton
+            ariaLabel={playButtonLabel}
+            className="border-white/10 bg-white/[0.06] text-stone-100 hover:border-rose-300/30 hover:bg-white/[0.1]"
+            onClick={togglePlayback}
+            size="sm"
+          >
+            {isPlaying ? (
+              <Pause className="size-3.5" />
+            ) : (
+              <VoicePlayIcon className="size-3.5" />
+            )}
+          </VoiceWaveformIconButton>
+          <div className="relative min-w-0 overflow-hidden">
+            <VoiceWaveformBars
+              isDisabled={false}
+              onSeek={setProgressRatio}
+              peaks={peaks}
+              progressRatio={progressRatio}
+            />
+          </div>
+          <span className="shrink-0 tabular-nums text-[11px] text-stone-500">
+            {`${formatAudioTime(progressRatio * durationSeconds)} / ${formatAudioTime(durationSeconds)}`}
+          </span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       className={
@@ -80,16 +117,22 @@ export function HeroExampleVoicePreview({
           : 'mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5'
       }
     >
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+      {demoHint ? (
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-gold/80">
+            {label}
+          </p>
+          <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-stone-500">
+            {demoHint}
+          </span>
+        </div>
+      ) : (
         <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-gold/80">
           {label}
         </p>
-        <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-stone-500">
-          {demoHint}
-        </span>
-      </div>
+      )}
 
-      <div className="mt-3 grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
+      <div className="mt-3 grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-end gap-2 sm:gap-3">
         <VoiceWaveformIconButton
           ariaLabel={playButtonLabel}
           className="border-white/10 bg-white/[0.06] text-stone-100 hover:border-rose-300/30 hover:bg-white/[0.1]"
@@ -105,14 +148,14 @@ export function HeroExampleVoicePreview({
 
         <div className="relative z-0 min-w-0 overflow-hidden">
           <VoiceWaveformBars
-          isDisabled={false}
-          onSeek={setProgressRatio}
-          peaks={peaks}
-          progressRatio={progressRatio}
+            isDisabled={false}
+            onSeek={setProgressRatio}
+            peaks={peaks}
+            progressRatio={progressRatio}
           />
         </div>
 
-        <span className="relative z-0 shrink-0 tabular-nums text-[11px] text-stone-500">
+        <span className="relative z-0 shrink-0 leading-none tabular-nums text-[11px] text-stone-500">
           {`${formatAudioTime(progressRatio * durationSeconds)} / ${formatAudioTime(durationSeconds)}`}
         </span>
       </div>

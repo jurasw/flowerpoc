@@ -202,15 +202,16 @@ export const en = {
   },
   checkoutSuccess: {
     title: 'Your rose is ready.',
-    subtitleLink: 'Copy the link below or scan the QR code.',
-    subtitleEmail: (email: string): string =>
-      `Send the link below to ${email}.`,
-    subtitlePhone: (phone: string): string =>
-      `Send the link below by text to ${phone}.`,
+    emailSent: (email: string): string => `Email sent to ${email}`,
+    smsSent: (phone: string): string => `SMS sent to ${phone}`,
+    linkSubtitle: 'Copy the link below or download the QR code.',
     copy: 'Copy link',
     copied: 'Copied',
     qrLabel: 'Scan to open the rose',
-    previewLink: 'Preview what they will see →',
+    downloadQr: 'Download QR code',
+    openRose: 'Open rose page',
+    finalizing: 'Payment received. Preparing your rose…',
+    previewEyebrow: 'Recipient preview',
   },
   flower: {
     forRecipient: (name: string): string => `For ${name}`,

@@ -63,7 +63,7 @@ export const Route = createFileRoute('/api/checkout/session')({
               : {}),
             ...(voiceMessageId ? { voiceMessageId } : {}),
           },
-          success_url: `${appUrl}/?session_id={CHECKOUT_SESSION_ID}#create`,
+          success_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${appUrl}/?canceled=1#create`,
         })
 

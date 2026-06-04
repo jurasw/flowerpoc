@@ -14,17 +14,14 @@ import type { Locale } from '#/lib/i18n/locale'
 import { roseModelUrl } from '#/lib/roseModel'
 
 interface HomeSearch {
-  session_id?: string
   canceled?: string
 }
 
 function parseHomeSearch(search: Record<string, unknown>): HomeSearch {
-  const sessionId =
-    typeof search.session_id === 'string' ? search.session_id : undefined
   const canceled =
     search.canceled === '1' || search.canceled === 1 ? '1' : undefined
 
-  return { session_id: sessionId, canceled }
+  return { canceled }
 }
 
 export const Route = createFileRoute('/')({
@@ -57,7 +54,7 @@ export const Route = createFileRoute('/')({
 })
 
 function LandingPage() {
-  const { session_id: sessionId, canceled } = Route.useSearch()
+  const { canceled } = Route.useSearch()
   useLandingAnchorScroll()
 
   return (
@@ -69,10 +66,7 @@ function LandingPage() {
         <LandingHowItWorks />
         <LandingFeatures />
         <LandingPricing />
-        <CreateRoseForm
-          isCanceled={canceled === '1'}
-          sessionId={sessionId}
-        />
+        <CreateRoseForm isCanceled={canceled === '1'} />
       </main>
       <LandingFooter />
     </div>

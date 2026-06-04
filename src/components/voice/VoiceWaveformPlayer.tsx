@@ -33,7 +33,7 @@ export function VoiceWaveformPlayer({
 
   return (
     <div className="w-full min-w-0">
-      <div className="grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
+      <div className="grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-end gap-2 sm:gap-3">
         <VoiceWaveformIconButton
           ariaLabel={playButtonLabel}
           className="border-white/10 bg-white/[0.06] text-stone-100 hover:border-rose-300/30 hover:bg-white/[0.1]"
@@ -56,7 +56,7 @@ export function VoiceWaveformPlayer({
           />
         </div>
 
-        <span className="relative z-0 shrink-0 tabular-nums text-xs text-stone-500">
+        <span className="relative z-0 shrink-0 leading-none tabular-nums text-xs text-stone-500">
           {playback.isLoading
             ? loadingLabel
             : `${formatAudioTime(playback.currentSeconds)} / ${formatAudioTime(playback.durationSeconds)}`}

@@ -1,9 +1,7 @@
-import { memo, useEffect, useState } from 'react'
+import { memo, useState } from 'react'
 
-import { CheckoutSuccessPanel } from '#/components/landing/CheckoutSuccessPanel'
 import { CreateRoseFormFields } from '#/components/landing/CreateRoseFormFields'
 import { RoseScene } from '#/components/RoseScene'
-import { useCheckoutPolling } from '#/hooks/useCheckoutPolling'
 import { useCreateRoseFormDraft } from '#/hooks/useCreateRoseFormDraft'
 import { useI18n } from '#/lib/i18n/i18n-context'
 import { formatProductPrice, productConfig } from '#/lib/product-config'
@@ -33,33 +31,18 @@ const RosePreviewPanel = memo(function RosePreviewPanel() {
 })
 
 interface CreateRoseFormProps {
-  sessionId?: string
   isCanceled?: boolean
 }
 
 export function CreateRoseForm({
-  sessionId,
   isCanceled = false,
 }: CreateRoseFormProps) {
   const { locale, t } = useI18n()
-  const {
-    result,
-    error: checkoutError,
-    isFinalizing,
-  } = useCheckoutPolling(sessionId, t.createForm)
-
   const draft = useCreateRoseFormDraft()
-  const { clearDraft } = draft
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const error = submitError ?? checkoutError
-
-  useEffect(() => {
-    if (result?.isReady) {
-      clearDraft()
-    }
-  }, [clearDraft, result?.isReady])
+  const error = submitError
 
   const restoredVoiceRecording =
     draft.isHydrated && draft.voiceBlob && draft.voiceMimeType
@@ -141,16 +124,10 @@ export function CreateRoseForm({
               </p>
             ) : null}
 
-            {isFinalizing ? (
-              <p className="mb-6 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-stone-300">
-                {t.createForm.finalizingNotice}
-              </p>
-            ) : null}
-
             <CreateRoseFormFields
               deliveryMethod={draft.deliveryMethod}
               error={error}
-              isFinalizing={isFinalizing}
+              isFinalizing={false}
               isSubmitting={isSubmitting}
               onDeliveryMethodChange={draft.setDeliveryMethod}
               onQuoteChange={draft.setQuote}
@@ -171,8 +148,6 @@ export function CreateRoseForm({
               senderEmail={draft.senderEmail}
               senderName={draft.senderName}
             />
-
-            {result?.isReady ? <CheckoutSuccessPanel result={result} /> : null}
           </div>
 
           <RosePreviewPanel />
