@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, memo, Suspense, useEffect, useRef, useState } from 'react'
 
 import type { RoseSceneCanvasProps } from '#/components/RoseSceneCanvas'
 
@@ -19,7 +19,10 @@ function RoseScenePlaceholder() {
   )
 }
 
-function DeferredRoseScene({ className, ...canvasProps }: RoseSceneCanvasProps) {
+const DeferredRoseScene = memo(function DeferredRoseScene({
+  className,
+  ...canvasProps
+}: RoseSceneCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [shouldMount, setShouldMount] = useState(false)
   const rootClassName = className ?? 'relative h-full w-full'
@@ -63,9 +66,9 @@ function DeferredRoseScene({ className, ...canvasProps }: RoseSceneCanvasProps) 
       )}
     </div>
   )
-}
+})
 
-export function RoseScene({
+export const RoseScene = memo(function RoseScene({
   deferUntilVisible = false,
   ...props
 }: RoseSceneCanvasProps & { deferUntilVisible?: boolean }) {
@@ -78,4 +81,4 @@ export function RoseScene({
       <RoseSceneCanvas {...props} />
     </Suspense>
   )
-}
+})

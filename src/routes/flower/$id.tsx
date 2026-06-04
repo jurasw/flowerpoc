@@ -1,9 +1,8 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
-import { Droplets, Heart } from 'lucide-react'
+import { Heart, Sparkles } from 'lucide-react'
 
+import { VoiceMessagePlayer } from '#/components/flower/VoiceMessagePlayer'
 import { RoseScene } from '#/components/RoseScene'
-import { FLOWER_LIFESPAN_DAYS, getFlowerLifecycle } from '#/lib/flower-lifecycle'
-import type { FlowerLifecycle } from '#/lib/flower-types'
 import { useI18n } from '#/lib/i18n/i18n-context'
 import { roseModelUrl } from '#/lib/roseModel'
 import { getFlower } from '#/server/flowers'
@@ -31,43 +30,27 @@ export const Route = createFileRoute('/flower/$id')({
   component: FlowerViewPage,
 })
 
-function FlowerFreshnessBadge({
-  lifecycle,
+function FlowerLastingBadge({
   bloomedOn,
 }: {
-  lifecycle: FlowerLifecycle
   bloomedOn: string
 }): React.ReactElement {
   const { t } = useI18n()
 
   return (
     <div
-      aria-label={
-        lifecycle.isExpired
-          ? t.flower.freshness.wiltedAria(FLOWER_LIFESPAN_DAYS, bloomedOn)
-          : t.flower.freshness.freshAria(lifecycle.daysRemaining, bloomedOn)
-      }
+      aria-label={t.flower.lasting.ariaLabel(bloomedOn)}
       className="flex items-center gap-2 rounded-[2rem] border border-white/10 bg-black/55 px-2.5 py-1.5 shadow-lg shadow-black/50 backdrop-blur-md"
       role="img"
     >
       <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
-        <Droplets className="size-3 text-rose-300/90" strokeWidth={1.75} />
+        <Sparkles className="size-3 text-rose-300/90" strokeWidth={1.75} />
       </span>
       <div className="min-w-0 text-[10px] font-medium uppercase leading-snug tracking-[0.12em]">
-        {lifecycle.isExpired ? (
-          <p className="text-gold/90">
-            {t.flower.freshness.wilted} · {bloomedOn}
-          </p>
-        ) : (
-          <>
-            <p className="text-stone-100">
-              {t.flower.freshness.daysLeft(lifecycle.daysRemaining)}
-            </p>
-            <p className="mt-0.5 text-stone-500">
-              {t.flower.freshness.bloomedOn(bloomedOn)}
-            </p>
-          </>
-        )}
+        <p className="text-stone-100">{t.flower.lasting.label}</p>
+        <p className="mt-0.5 text-stone-500">
+          {t.flower.lasting.bloomedOn(bloomedOn)}
+        </p>
       </div>
     </div>
   )
@@ -80,6 +63,7 @@ function FlowerMessageCard({
     recipientName: string
     senderName: string
     quote: string
+    voiceMessageId?: string
   }
 }) {
   const { t } = useI18n()
@@ -107,6 +91,10 @@ function FlowerMessageCard({
       <p className="mt-6 text-right text-sm tracking-wide text-rose-200/70">
         — {flower.senderName}
       </p>
+
+      {flower.voiceMessageId ? (
+        <VoiceMessagePlayer voiceMessageId={flower.voiceMessageId} />
+      ) : null}
     </article>
   )
 }
@@ -114,8 +102,6 @@ function FlowerMessageCard({
 function FlowerViewPage() {
   const flower = Route.useLoaderData()
   const { locale, t } = useI18n()
-  const lifecycle = getFlowerLifecycle(flower.createdAt)
-
   const bloomedOn = new Date(flower.createdAt).toLocaleDateString(locale, {
     month: 'long',
     day: 'numeric',
@@ -141,7 +127,7 @@ function FlowerViewPage() {
           <FlowerMessageCard flower={flower} />
 
           <div className="mx-auto mt-4 flex w-full max-w-xl items-center justify-between gap-4 sm:max-w-2xl">
-            <FlowerFreshnessBadge bloomedOn={bloomedOn} lifecycle={lifecycle} />
+            <FlowerLastingBadge bloomedOn={bloomedOn} />
             <Link
               className="shrink-0 pr-1 text-right text-[10px] font-medium uppercase tracking-[0.18em] text-stone-400 underline-offset-4 transition hover:text-rose-200 hover:underline sm:pr-1.5 sm:text-xs sm:tracking-[0.2em]"
               to="/"

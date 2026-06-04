@@ -1,8 +1,24 @@
 import { Box3, type Group, Vector3 } from 'three'
 
-interface ViewportSize {
+export interface ViewportSize {
   width: number
   height: number
+}
+
+export function hasRoseViewportChangedSignificantly(
+  previous: ViewportSize | null,
+  next: ViewportSize,
+): boolean {
+  if (!previous) {
+    return true
+  }
+
+  const widthDelta = Math.abs(previous.width - next.width)
+  const heightDelta = Math.abs(previous.height - next.height)
+  const widthThreshold = Math.max(previous.width, next.width) * 0.06
+  const heightThreshold = Math.max(previous.height, next.height) * 0.06
+
+  return widthDelta > widthThreshold || heightDelta > heightThreshold
 }
 
 interface RoseFrameOptions {
@@ -38,10 +54,8 @@ export function fitRoseModelToViewport(
   group.scale.setScalar(Math.min(fitHorizontal, fitVertical))
 }
 
-export function resetRoseModelTransform(scene: Group, group: Group) {
+export function resetRoseSceneTransform(scene: Group) {
   scene.position.set(0, 0, 0)
   scene.rotation.set(0, 0, 0)
   scene.scale.set(1, 1, 1)
-  group.scale.setScalar(1)
-  group.rotation.set(0, 0, 0)
 }

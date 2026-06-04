@@ -4,7 +4,7 @@ export const en = {
     homeTitle: (productName: string): string =>
       `${productName} — Send a rose that lasts`,
     homeDescription:
-      'Send a personalized digital rose with a private message. One payment, one link, five days of beauty.',
+      'Send a personalized digital rose with a private message. One payment, one link, yours forever.',
   },
   header: {
     nav: {
@@ -27,9 +27,9 @@ export const en = {
       label: 'Private link',
       description: 'Only they can open it',
     },
-    freshness: {
-      label: (days: number): string => `${days}-day freshness`,
-      description: 'A rose that fades with time',
+    lasting: {
+      label: 'Yours forever',
+      description: 'A rose that stays with them',
     },
     personalMessage: {
       label: 'Personal message',
@@ -38,16 +38,12 @@ export const en = {
   },
   howItWorks: {
     eyebrow: 'How it works',
-    title: 'Three steps to something unforgettable',
+    title: 'Two steps to something unforgettable',
     steps: {
       compose: {
         title: 'Compose',
         description:
           'Write their name, your name, and a message only they should read.',
-      },
-      pay: {
-        title: 'Pay',
-        description: 'One simple payment. No subscription, no account required.',
       },
       share: {
         title: 'Share',
@@ -71,10 +67,10 @@ export const en = {
       description:
         'Your words appear on an elegant card beneath the rose — intimate and personal.',
     },
-    ephemeral: {
-      title: 'Ephemeral by design',
-      description: (days: number): string =>
-        `Each rose stays fresh for ${days} days, then gently wilts — like the real thing.`,
+    lasting: {
+      title: 'Forever accessible',
+      description:
+        'Your link and rose remain — return whenever you want, with no rush.',
     },
     link: {
       title: 'One private link',
@@ -90,7 +86,7 @@ export const en = {
       rose: 'One personalized 3D digital rose',
       card: 'Private message card',
       link: 'Shareable link — no app needed',
-      freshness: (days: number): string => `${days} days of freshness`,
+      lasting: 'Lifetime access to your rose',
     },
     cta: 'Create your rose',
   },
@@ -111,6 +107,44 @@ export const en = {
     recipientPlaceholder: 'Someone special',
     messageLabel: 'Your message',
     messagePlaceholder: 'Write something only they should read...',
+    delivery: {
+      senderEmailLabel: 'Your email',
+      senderEmailPlaceholder: 'you@example.com',
+      methodLegend: 'How will you send it?',
+      methodEmail: 'Email',
+      methodPhone: 'Phone',
+      methodLink: 'Link & QR',
+      recipientEmailLabel: 'Their email',
+      recipientEmailPlaceholder: 'them@example.com',
+      recipientPhoneLabel: 'Their phone number',
+      recipientPhonePlaceholder: '+48 600 000 000',
+      linkMethodHint:
+        'After payment you will get a private link and QR code to share yourself.',
+    },
+    voice: {
+      label: 'Voice message (optional)',
+      hint: (seconds: number): string =>
+        `Record up to ${seconds} seconds. The recipient can play it on the rose page.`,
+      record: 'Record voice message',
+      stop: 'Stop recording',
+      playPreview: 'Play preview',
+      pausePreview: 'Pause preview',
+      waveformLoading: 'Loading…',
+      rerecord: 'Record again',
+      remove: 'Remove',
+      attached: 'Voice message attached — it will be sent with your rose.',
+      recording: (time: string): string => `Recording ${time}`,
+      unsupported: 'Voice recording is not supported in this browser.',
+      errors: {
+        unsupportedBrowser:
+          'Voice recording is not supported in this browser.',
+        noAudioCaptured: 'No audio was captured. Try recording again.',
+        microphoneRequired:
+          'Microphone access is required to record a voice message.',
+        previewPlaybackFailed:
+          'Could not play the voice message preview.',
+      },
+    },
     payButton: (price: string): string => `Pay ${price} & create rose`,
     redirecting: 'Redirecting to checkout…',
     errors: {
@@ -118,44 +152,53 @@ export const en = {
       stillPreparing:
         'Payment received, but your rose is still being prepared. Refresh in a moment.',
       checkoutFailed: 'Could not start checkout. Please try again.',
+      voiceUploadFailed: 'Could not upload the voice message. Please try again.',
     },
     preview: {
       label: 'Preview',
-      caption: (days: number): string =>
-        `Drag to rotate. Each rose stays fresh for ${days} days from the moment its link is created.`,
+      caption:
+        'Drag to rotate. Your rose stays available for as long as you keep the link.',
     },
   },
   checkoutSuccess: {
     title: 'Your rose is ready.',
-    subtitle: 'Copy the link below and send it by email or text.',
+    subtitleLink: 'Copy the link below or scan the QR code.',
+    subtitleEmail: (email: string): string =>
+      `Send the link below to ${email}.`,
+    subtitlePhone: (phone: string): string =>
+      `Send the link below by text to ${phone}.`,
     copy: 'Copy link',
     copied: 'Copied',
+    qrLabel: 'Scan to open the rose',
     previewLink: 'Preview what they will see →',
   },
   flower: {
     forRecipient: (name: string): string => `For ${name}`,
     senderGaveRoseSuffix: ' sent you a rose',
     sendYourOwn: 'Send your own rose',
-    freshness: {
-      wilted: 'Wilted',
+    voice: {
+      label: 'Voice message',
+      play: 'Play voice message',
+      pause: 'Pause',
+      loading: 'Loading voice message…',
+      unavailable: 'Voice message is unavailable.',
+    },
+    lasting: {
+      label: 'Forever',
       bloomedOn: (date: string): string => `Bloomed ${date}`,
-      daysLeft: (days: number): string =>
-        days === 1 ? '1 day left' : `${days} days left`,
-      wiltedAria: (days: number, bloomedOn: string): string =>
-        `Wilted after ${days} days. Bloomed ${bloomedOn}`,
-      freshAria: (days: number, bloomedOn: string): string =>
-        `${days} days of freshness left. Bloomed ${bloomedOn}`,
+      ariaLabel: (bloomedOn: string): string =>
+        `A rose for keeps. Bloomed ${bloomedOn}`,
     },
   },
   notFound: {
-    title: 'This rose has wilted',
-    description: 'The link may be wrong, or this flower was never planted.',
+    title: 'Rose not found',
+    description: 'The link may be wrong, or this rose was never created.',
     cta: 'Send a new rose',
   },
   checkout: {
     productName: 'Digital Rose',
-    productDescription: (days: number): string =>
-      `A personalized digital rose with a private message. Fresh for ${days} days.`,
+    productDescription:
+      'A personalized digital rose with a private message. Yours to keep.',
   },
 }
 

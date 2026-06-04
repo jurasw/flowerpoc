@@ -2,15 +2,15 @@ import { useServerFn } from '@tanstack/react-start'
 import { memo, useEffect, useState } from 'react'
 
 import { CheckoutSuccessPanel } from '#/components/landing/CheckoutSuccessPanel'
+import { CreateRoseFormFields } from '#/components/landing/CreateRoseFormFields'
 import { RoseScene } from '#/components/RoseScene'
-import type { CheckoutResult } from '#/lib/flower-types'
+import { useCheckoutPolling } from '#/hooks/useCheckoutPolling'
+import { useCreateRoseFormDraft } from '#/hooks/useCreateRoseFormDraft'
 import { useI18n } from '#/lib/i18n/i18n-context'
 import { formatProductPrice, productConfig } from '#/lib/product-config'
+import { blobToBase64 } from '#/lib/voice-message-encoding'
 import createCheckoutSession from '#/server/CreateCheckoutSession'
-import getCheckoutResult from '#/server/GetCheckoutResult'
-
-const pollAttempts = 5
-const pollDelayMs = 1500
+import savePendingVoiceMessage from '#/server/SavePendingVoiceMessage'
 
 const RosePreviewPanel = memo(function RosePreviewPanel() {
   const { t } = useI18n()
@@ -25,7 +25,7 @@ const RosePreviewPanel = memo(function RosePreviewPanel() {
         </span>
       </div>
       <p className="mt-4 shrink-0 text-center text-sm text-stone-500">
-        {t.createForm.preview.caption(productConfig.lifespanDays)}
+        {t.createForm.preview.caption}
       </p>
     </section>
   )
@@ -42,84 +42,73 @@ export function CreateRoseForm({
 }: CreateRoseFormProps) {
   const { locale, t } = useI18n()
   const createCheckoutSessionFn = useServerFn(createCheckoutSession)
-  const getCheckoutResultFn = useServerFn(getCheckoutResult)
+  const savePendingVoiceMessageFn = useServerFn(savePendingVoiceMessage)
+  const {
+    result,
+    error: checkoutError,
+    isFinalizing,
+  } = useCheckoutPolling(sessionId, t.createForm)
 
-  const [senderName, setSenderName] = useState('')
-  const [recipientName, setRecipientName] = useState('')
-  const [quote, setQuote] = useState('')
-  const [result, setResult] = useState<CheckoutResult | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const draft = useCreateRoseFormDraft()
+  const { clearDraft } = draft
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isFinalizing, setIsFinalizing] = useState(Boolean(sessionId))
+
+  const error = submitError ?? checkoutError
 
   useEffect(() => {
-    if (!sessionId) {
-      return
+    if (result?.isReady) {
+      clearDraft()
     }
+  }, [clearDraft, result?.isReady])
 
-    const activeSessionId = sessionId
-    let isCancelled = false
-    let attempt = 0
-
-    async function pollCheckoutResult(): Promise<void> {
-      while (attempt < pollAttempts && !isCancelled) {
-        try {
-          const checkoutResult = await getCheckoutResultFn({
-            data: { sessionId: activeSessionId },
-          })
-
-          if (checkoutResult.isReady) {
-            if (!isCancelled) {
-              setResult(checkoutResult)
-              setIsFinalizing(false)
-            }
-            return
-          }
-        } catch {
-          if (!isCancelled) {
-            setError(t.createForm.errors.verifyFailed)
-            setIsFinalizing(false)
-          }
-          return
-        }
-
-        attempt += 1
-
-        if (attempt < pollAttempts) {
-          await new Promise((resolve) => {
-            window.setTimeout(resolve, pollDelayMs)
-          })
-        }
-      }
-
-      if (!isCancelled) {
-        setError(t.createForm.errors.stillPreparing)
-        setIsFinalizing(false)
-      }
-    }
-
-    pollCheckoutResult()
-
-    return () => {
-      isCancelled = true
-    }
-  }, [sessionId, getCheckoutResultFn, t])
+  const restoredVoiceRecording =
+    draft.isHydrated && draft.voiceBlob && draft.voiceMimeType
+      ? { blob: draft.voiceBlob, mimeType: draft.voiceMimeType }
+      : null
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
-    setError(null)
+    setSubmitError(null)
     setIsSubmitting(true)
 
     try {
+      let voiceMessageId: string | undefined
+
+      if (draft.voiceBlob && draft.voiceMimeType) {
+        const upload = await savePendingVoiceMessageFn({
+          data: {
+            mimeType: draft.voiceMimeType,
+            dataBase64: await blobToBase64(draft.voiceBlob),
+          },
+        })
+        voiceMessageId = upload.voiceMessageId
+      }
+
       const checkout = await createCheckoutSessionFn({
-        data: { senderName, recipientName, quote, locale },
+        data: {
+          senderName: draft.senderName,
+          recipientName: draft.recipientName,
+          quote: draft.quote,
+          senderEmail: draft.senderEmail,
+          deliveryMethod: draft.deliveryMethod,
+          recipientEmail:
+            draft.deliveryMethod === 'email' ? draft.recipientEmail : undefined,
+          recipientPhone:
+            draft.deliveryMethod === 'phone' ? draft.recipientPhone : undefined,
+          locale,
+          voiceMessageId,
+        },
       })
       window.location.assign(checkout.url)
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : t.createForm.errors.checkoutFailed,
+    } catch (caughtError) {
+      const fallbackMessage =
+        draft.voiceBlob && draft.voiceMimeType
+          ? t.createForm.errors.voiceUploadFailed
+          : t.createForm.errors.checkoutFailed
+
+      setSubmitError(
+        caughtError instanceof Error ? caughtError.message : fallbackMessage,
       )
       setIsSubmitting(false)
     }
@@ -157,65 +146,30 @@ export function CreateRoseForm({
               </p>
             ) : null}
 
-            <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <label className="block space-y-2">
-                  <span className="text-xs font-medium uppercase tracking-[0.12em] text-stone-500">
-                    {t.createForm.senderLabel}
-                  </span>
-                  <input
-                    className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-rose-300/40 focus:ring-2 focus:ring-rose-300/10"
-                    maxLength={80}
-                    onChange={(event) => setSenderName(event.target.value)}
-                    placeholder={t.createForm.senderPlaceholder}
-                    required
-                    value={senderName}
-                  />
-                </label>
-
-                <label className="block space-y-2">
-                  <span className="text-xs font-medium uppercase tracking-[0.12em] text-stone-500">
-                    {t.createForm.recipientLabel}
-                  </span>
-                  <input
-                    className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-rose-300/40 focus:ring-2 focus:ring-rose-300/10"
-                    maxLength={80}
-                    onChange={(event) => setRecipientName(event.target.value)}
-                    placeholder={t.createForm.recipientPlaceholder}
-                    required
-                    value={recipientName}
-                  />
-                </label>
-              </div>
-
-              <label className="block space-y-2">
-                <span className="text-xs font-medium uppercase tracking-[0.12em] text-stone-500">
-                  {t.createForm.messageLabel}
-                </span>
-                <textarea
-                  className="min-h-36 w-full resize-none rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-stone-100 outline-none transition placeholder:text-stone-600 focus:border-rose-300/40 focus:ring-2 focus:ring-rose-300/10"
-                  maxLength={500}
-                  onChange={(event) => setQuote(event.target.value)}
-                  placeholder={t.createForm.messagePlaceholder}
-                  required
-                  value={quote}
-                />
-              </label>
-
-              {error ? (
-                <p className="rounded-lg border border-rose-400/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-                  {error}
-                </p>
-              ) : null}
-
-              <button
-                className="inline-flex w-full shrink-0 items-center justify-center rounded-lg bg-wine px-5 py-3.5 text-sm font-medium tracking-wide text-white shadow-lg shadow-wine/20 transition hover:bg-wine-deep disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isSubmitting || isFinalizing}
-                type="submit"
-              >
-                {isSubmitting ? t.createForm.redirecting : payButtonLabel}
-              </button>
-            </form>
+            <CreateRoseFormFields
+              deliveryMethod={draft.deliveryMethod}
+              error={error}
+              isFinalizing={isFinalizing}
+              isSubmitting={isSubmitting}
+              onDeliveryMethodChange={draft.setDeliveryMethod}
+              onQuoteChange={draft.setQuote}
+              onRecipientEmailChange={draft.setRecipientEmail}
+              onRecipientNameChange={draft.setRecipientName}
+              onRecipientPhoneChange={draft.setRecipientPhone}
+              onSenderEmailChange={draft.setSenderEmail}
+              onSenderNameChange={draft.setSenderName}
+              onSubmit={handleSubmit}
+              onVoiceError={(message) => setSubmitError(message)}
+              onVoiceRecordingChange={draft.setVoiceRecording}
+              payButtonLabel={payButtonLabel}
+              quote={draft.quote}
+              recipientEmail={draft.recipientEmail}
+              recipientName={draft.recipientName}
+              recipientPhone={draft.recipientPhone}
+              restoredVoiceRecording={restoredVoiceRecording}
+              senderEmail={draft.senderEmail}
+              senderName={draft.senderName}
+            />
 
             {result?.isReady ? <CheckoutSuccessPanel result={result} /> : null}
           </div>

@@ -8,6 +8,8 @@ const SEED_FLOWERS: Flower[] = [
     senderName: 'Janusz',
     recipientName: 'Barbary',
     quote: 'kocham cię bardzo, z tobą Basiu i na łóżku i na sianie, wszystko jedno',
+    senderEmail: 'janusz@example.com',
+    deliveryMethod: 'link',
     createdAt: '2026-05-30T16:10:36.850Z',
   },
 ]
@@ -19,14 +21,20 @@ for (const flower of SEED_FLOWERS) {
 export function createFlowerRecord(
   input: CreateFlowerInput,
   stripeSessionId?: string,
+  voiceMessageId?: string,
 ): Flower {
   const flower: Flower = {
     id: crypto.randomUUID(),
     senderName: input.senderName.trim(),
     recipientName: input.recipientName.trim(),
     quote: input.quote.trim(),
+    senderEmail: input.senderEmail,
+    deliveryMethod: input.deliveryMethod,
+    recipientEmail: input.recipientEmail,
+    recipientPhone: input.recipientPhone,
     createdAt: new Date().toISOString(),
     stripeSessionId,
+    voiceMessageId,
   }
 
   flowers.set(flower.id, flower)

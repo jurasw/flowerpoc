@@ -1,4 +1,4 @@
-import { CreditCard, PenLine, Share2 } from 'lucide-react'
+import { PenLine, Share2 } from 'lucide-react'
 
 import { useI18n } from '#/lib/i18n/i18n-context'
 
@@ -13,14 +13,8 @@ export function LandingHowItWorks() {
       description: t.howItWorks.steps.compose.description,
     },
     {
-      icon: CreditCard,
-      step: '02',
-      title: t.howItWorks.steps.pay.title,
-      description: t.howItWorks.steps.pay.description,
-    },
-    {
       icon: Share2,
-      step: '03',
+      step: '02',
       title: t.howItWorks.steps.share.title,
       description: t.howItWorks.steps.share.description,
     },
@@ -36,7 +30,7 @@ export function LandingHowItWorks() {
           {t.howItWorks.title}
         </h2>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-3">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2">
           {steps.map((step) => (
             <article
               className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 backdrop-blur"

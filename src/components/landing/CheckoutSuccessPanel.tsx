@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
 
+import { FlowerShareQrCode } from '#/components/landing/FlowerShareQrCode'
 import type { CheckoutResult } from '#/lib/flower-types'
 import { useI18n } from '#/lib/i18n/i18n-context'
 
@@ -18,6 +19,16 @@ export function CheckoutSuccessPanel({ result }: CheckoutSuccessPanelProps) {
       ? `${window.location.origin}/flower/${result.id}`
       : ''
 
+  const deliveryMethod = result.deliveryMethod ?? 'link'
+  const success = t.checkoutSuccess
+
+  const subtitle =
+    deliveryMethod === 'email' && result.recipientEmail
+      ? success.subtitleEmail(result.recipientEmail)
+      : deliveryMethod === 'phone' && result.recipientPhone
+        ? success.subtitlePhone(result.recipientPhone)
+        : success.subtitleLink
+
   async function handleCopyLink(): Promise<void> {
     if (!shareUrl) {
       return
@@ -30,12 +41,8 @@ export function CheckoutSuccessPanel({ result }: CheckoutSuccessPanelProps) {
 
   return (
     <div className="mt-6 shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
-      <p className="font-serif text-lg italic text-stone-100">
-        {t.checkoutSuccess.title}
-      </p>
-      <p className="mt-1 text-sm text-stone-400">
-        {t.checkoutSuccess.subtitle}
-      </p>
+      <p className="font-serif text-lg italic text-stone-100">{success.title}</p>
+      <p className="mt-1 text-sm text-stone-400">{subtitle}</p>
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
         <input
           className="flex-1 rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm text-stone-300"
@@ -48,15 +55,20 @@ export function CheckoutSuccessPanel({ result }: CheckoutSuccessPanelProps) {
           type="button"
         >
           {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
-          {copied ? t.checkoutSuccess.copied : t.checkoutSuccess.copy}
+          {copied ? success.copied : success.copy}
         </button>
       </div>
+      {deliveryMethod === 'link' && shareUrl ? (
+        <div className="mt-6 flex justify-center">
+          <FlowerShareQrCode label={success.qrLabel} shareUrl={shareUrl} />
+        </div>
+      ) : null}
       <Link
         className="mt-4 inline-block text-sm font-medium text-rose-300 underline-offset-4 hover:underline"
         params={{ id: result.id }}
         to="/flower/$id"
       >
-        {t.checkoutSuccess.previewLink}
+        {success.previewLink}
       </Link>
     </div>
   )

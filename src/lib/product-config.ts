@@ -3,7 +3,6 @@ export const productConfig = {
   productName: 'Digital Rose',
   priceCents: 200,
   currency: 'usd',
-  lifespanDays: 5,
 } as const
 
 export function formatProductPrice(): string {

@@ -1,7 +1,6 @@
 import { Link2, Lock, Sparkles } from 'lucide-react'
 
 import { useI18n } from '#/lib/i18n/i18n-context'
-import { productConfig } from '#/lib/product-config'
 
 export function LandingValueStrip() {
   const { t } = useI18n()
@@ -14,8 +13,8 @@ export function LandingValueStrip() {
     },
     {
       icon: Sparkles,
-      label: t.valueStrip.freshness.label(productConfig.lifespanDays),
-      description: t.valueStrip.freshness.description,
+      label: t.valueStrip.lasting.label,
+      description: t.valueStrip.lasting.description,
     },
     {
       icon: Link2,

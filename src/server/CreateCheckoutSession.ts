@@ -6,9 +6,11 @@ import { type Locale, resolveLocale } from '#/lib/i18n/locale'
 import { productConfig } from '#/lib/product-config'
 import { getAppUrl, getStripeClient } from '#/lib/stripe-client'
 import { validateCreateFlowerInput } from '#/lib/validate-flower-input'
+import { getVoiceMessageById } from '#/lib/voice-message-store'
 
 interface CreateCheckoutSessionInput extends CreateFlowerInput {
   locale?: string
+  voiceMessageId?: string
 }
 
 export interface CreateCheckoutSessionResult {
@@ -19,10 +21,24 @@ export default createServerFn({ method: 'POST' })
   .inputValidator(
     (
       data: CreateCheckoutSessionInput,
-    ): CreateFlowerInput & { locale: Locale } => ({
-      ...validateCreateFlowerInput(data),
-      locale: resolveLocale(data.locale),
-    }),
+    ): CreateFlowerInput & { locale: Locale; voiceMessageId?: string } => {
+      const validated = validateCreateFlowerInput(data)
+      const voiceMessageId = data.voiceMessageId?.trim()
+
+      if (voiceMessageId) {
+        const pendingVoiceMessage = getVoiceMessageById(voiceMessageId)
+
+        if (!pendingVoiceMessage || pendingVoiceMessage.flowerId) {
+          throw new Error('Voice message is invalid or already used.')
+        }
+      }
+
+      return {
+        ...validated,
+        locale: resolveLocale(data.locale),
+        voiceMessageId: voiceMessageId || undefined,
+      }
+    },
   )
   .handler(async ({ data }): Promise<CreateCheckoutSessionResult> => {
     const stripe = getStripeClient()
@@ -39,9 +55,7 @@ export default createServerFn({ method: 'POST' })
             unit_amount: productConfig.priceCents,
             product_data: {
               name: t.checkout.productName,
-              description: t.checkout.productDescription(
-                productConfig.lifespanDays,
-              ),
+              description: t.checkout.productDescription,
             },
           },
         },
@@ -50,6 +64,15 @@ export default createServerFn({ method: 'POST' })
         senderName: data.senderName,
         recipientName: data.recipientName,
         quote: data.quote,
+        senderEmail: data.senderEmail,
+        deliveryMethod: data.deliveryMethod,
+        ...(data.recipientEmail
+          ? { recipientEmail: data.recipientEmail }
+          : {}),
+        ...(data.recipientPhone
+          ? { recipientPhone: data.recipientPhone }
+          : {}),
+        ...(data.voiceMessageId ? { voiceMessageId: data.voiceMessageId } : {}),
       },
       success_url: `${appUrl}/?session_id={CHECKOUT_SESSION_ID}#create`,
       cancel_url: `${appUrl}/?canceled=1#create`,

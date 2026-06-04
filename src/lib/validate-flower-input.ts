@@ -1,4 +1,5 @@
 import type { CreateFlowerInput } from '#/lib/flower-types'
+import { validateShareDelivery } from '#/lib/validate-share-delivery'
 
 export function validateCreateFlowerInput(
   data: CreateFlowerInput,
@@ -11,5 +12,17 @@ export function validateCreateFlowerInput(
     throw new Error('Sender name, recipient name, and quote are required.')
   }
 
-  return { senderName, recipientName, quote }
+  const shareDelivery = validateShareDelivery({
+    senderEmail: data.senderEmail,
+    deliveryMethod: data.deliveryMethod,
+    recipientEmail: data.recipientEmail,
+    recipientPhone: data.recipientPhone,
+  })
+
+  return {
+    senderName,
+    recipientName,
+    quote,
+    ...shareDelivery,
+  }
 }

@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { useLandingAnchorScroll } from '#/hooks/useLandingAnchorScroll'
 import { CreateRoseForm } from '#/components/landing/CreateRoseForm'
 import { LandingFeatures } from '#/components/landing/LandingFeatures'
 import { LandingFooter } from '#/components/landing/LandingFooter'
@@ -57,6 +58,7 @@ export const Route = createFileRoute('/')({
 
 function LandingPage() {
   const { session_id: sessionId, canceled } = Route.useSearch()
+  useLandingAnchorScroll()
 
   return (
     <div className="min-h-screen bg-black text-stone-100">

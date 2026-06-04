@@ -6,7 +6,7 @@ export const pl: Dictionary = {
     homeTitle: (productName: string): string =>
       `${productName} — Wyślij różę, która trwa`,
     homeDescription:
-      'Wyślij spersonalizowaną cyfrową różę z prywatną wiadomością. Jedna płatność, jeden link, pięć dni piękna.',
+      'Wyślij spersonalizowaną cyfrową różę z prywatną wiadomością. Jedna płatność, jeden link — na zawsze.',
   },
   header: {
     nav: {
@@ -29,9 +29,9 @@ export const pl: Dictionary = {
       label: 'Prywatny link',
       description: 'Otworzy go tylko ta jedna osoba',
     },
-    freshness: {
-      label: (days: number): string => `${days} dni świeżości`,
-      description: 'Róża, która więdnie z czasem',
+    lasting: {
+      label: 'Na zawsze',
+      description: 'Róża, która zostaje na zawsze',
     },
     personalMessage: {
       label: 'Osobista wiadomość',
@@ -40,17 +40,12 @@ export const pl: Dictionary = {
   },
   howItWorks: {
     eyebrow: 'Jak to działa',
-    title: 'Trzy kroki do czegoś niezapomnianego',
+    title: 'Dwa kroki do czegoś niezapomnianego',
     steps: {
       compose: {
         title: 'Skomponuj',
         description:
           'Wpisz jej lub jego imię, swoje imię oraz wiadomość, którą przeczyta tylko ta osoba.',
-      },
-      pay: {
-        title: 'Zapłać',
-        description:
-          'Jedna prosta płatność. Bez subskrypcji, bez zakładania konta.',
       },
       share: {
         title: 'Udostępnij',
@@ -74,10 +69,10 @@ export const pl: Dictionary = {
       description:
         'Twoje słowa pojawiają się na eleganckiej karcie pod różą — intymnie i osobiście.',
     },
-    ephemeral: {
-      title: 'Ulotna z założenia',
-      description: (days: number): string =>
-        `Każda róża pozostaje świeża przez ${days} dni, a potem delikatnie więdnie — jak prawdziwa.`,
+    lasting: {
+      title: 'Zawsze dostępna',
+      description:
+        'Twój link i róża zostają — wracaj kiedy chcesz, bez pośpiechu.',
     },
     link: {
       title: 'Jeden prywatny link',
@@ -93,7 +88,7 @@ export const pl: Dictionary = {
       rose: 'Jedna spersonalizowana cyfrowa róża 3D',
       card: 'Karta z prywatną wiadomością',
       link: 'Link do udostępnienia — bez aplikacji',
-      freshness: (days: number): string => `${days} dni świeżości`,
+      lasting: 'Bezterminowy dostęp do Twojej róży',
     },
     cta: 'Stwórz swoją różę',
   },
@@ -114,6 +109,46 @@ export const pl: Dictionary = {
     recipientPlaceholder: 'Ktoś wyjątkowy',
     messageLabel: 'Twoja wiadomość',
     messagePlaceholder: 'Napisz coś, co przeczyta tylko ta jedna osoba...',
+    delivery: {
+      senderEmailLabel: 'Twój e-mail',
+      senderEmailPlaceholder: 'ty@example.com',
+      methodLegend: 'Jak chcesz wysłać różę?',
+      methodEmail: 'E-mail',
+      methodPhone: 'Telefon',
+      methodLink: 'Link i QR',
+      recipientEmailLabel: 'E-mail odbiorcy',
+      recipientEmailPlaceholder: 'oni@example.com',
+      recipientPhoneLabel: 'Numer telefonu odbiorcy',
+      recipientPhonePlaceholder: '+48 600 000 000',
+      linkMethodHint:
+        'Po płatności otrzymasz prywatny link i kod QR do samodzielnego udostępnienia.',
+    },
+    voice: {
+      label: 'Wiadomość głosowa (opcjonalnie)',
+      hint: (seconds: number): string =>
+        `Nagraj do ${seconds} sekund. Odbiorca odtworzy ją na stronie róży.`,
+      record: 'Nagraj wiadomość głosową',
+      stop: 'Zatrzymaj nagrywanie',
+      playPreview: 'Odtwórz podgląd',
+      pausePreview: 'Wstrzymaj podgląd',
+      waveformLoading: 'Ładowanie…',
+      rerecord: 'Nagraj ponownie',
+      remove: 'Usuń',
+      attached: 'Wiadomość głosowa dołączona — wyślemy ją wraz z różą.',
+      recording: (time: string): string => `Nagrywanie ${time}`,
+      unsupported:
+        'Nagrywanie głosu nie jest obsługiwane w tej przeglądarce.',
+      errors: {
+        unsupportedBrowser:
+          'Nagrywanie głosu nie jest obsługiwane w tej przeglądarce.',
+        noAudioCaptured:
+          'Nie nagrano dźwięku. Spróbuj nagrać wiadomość ponownie.',
+        microphoneRequired:
+          'Do nagrania wiadomości głosowej potrzebny jest dostęp do mikrofonu.',
+        previewPlaybackFailed:
+          'Nie udało się odtworzyć podglądu wiadomości głosowej.',
+      },
+    },
     payButton: (price: string): string => `Zapłać ${price} i stwórz różę`,
     redirecting: 'Przekierowanie do płatności…',
     errors: {
@@ -123,43 +158,53 @@ export const pl: Dictionary = {
         'Płatność otrzymana, ale Twoja róża jest jeszcze przygotowywana. Odśwież za chwilę.',
       checkoutFailed:
         'Nie udało się rozpocząć płatności. Spróbuj ponownie.',
+      voiceUploadFailed:
+        'Nie udało się przesłać wiadomości głosowej. Spróbuj ponownie.',
     },
     preview: {
       label: 'Podgląd',
-      caption: (days: number): string =>
-        `Przeciągnij, aby obrócić. Każda róża pozostaje świeża przez ${days} dni od chwili utworzenia linku.`,
+      caption:
+        'Przeciągnij, aby obrócić. Twoja róża pozostaje dostępna tak długo, jak zachowasz link.',
     },
   },
   checkoutSuccess: {
     title: 'Twoja róża jest gotowa.',
-    subtitle: 'Skopiuj poniższy link i wyślij go e-mailem lub SMS-em.',
+    subtitleLink: 'Skopiuj poniższy link lub zeskanuj kod QR.',
+    subtitleEmail: (email: string): string =>
+      `Wyślij poniższy link na adres ${email}.`,
+    subtitlePhone: (phone: string): string =>
+      `Wyślij poniższy link SMS-em na numer ${phone}.`,
     copy: 'Kopiuj link',
     copied: 'Skopiowano',
+    qrLabel: 'Zeskanuj, aby otworzyć różę',
     previewLink: 'Zobacz, co zobaczy odbiorca →',
   },
   flower: {
     forRecipient: (name: string): string => `Dla ${name}`,
     senderGaveRoseSuffix: ' podarował Ci różę',
     sendYourOwn: 'Wyślij własną różę',
-    freshness: {
-      wilted: 'Zwiędła',
+    voice: {
+      label: 'Wiadomość głosowa',
+      play: 'Odtwórz wiadomość głosową',
+      pause: 'Wstrzymaj',
+      loading: 'Ładowanie wiadomości głosowej…',
+      unavailable: 'Wiadomość głosowa jest niedostępna.',
+    },
+    lasting: {
+      label: 'Na zawsze',
       bloomedOn: (date: string): string => `Zakwitła ${date}`,
-      daysLeft: (days: number): string =>
-        days === 1 ? 'Został 1 dzień' : `Zostało ${days} dni`,
-      wiltedAria: (days: number, bloomedOn: string): string =>
-        `Zwiędła po ${days} dniach. Zakwitła ${bloomedOn}`,
-      freshAria: (days: number, bloomedOn: string): string =>
-        `Pozostało ${days} dni świeżości. Zakwitła ${bloomedOn}`,
+      ariaLabel: (bloomedOn: string): string =>
+        `Róża na zawsze. Zakwitła ${bloomedOn}`,
     },
   },
   notFound: {
-    title: 'Ta róża zwiędła',
-    description: 'Link może być błędny albo ta róża nigdy nie została zasadzona.',
+    title: 'Nie znaleziono róży',
+    description: 'Link może być błędny albo ta róża nigdy nie została utworzona.',
     cta: 'Wyślij nową różę',
   },
   checkout: {
     productName: 'Cyfrowa Róża',
-    productDescription: (days: number): string =>
-      `Spersonalizowana cyfrowa róża z prywatną wiadomością. Świeża przez ${days} dni.`,
+    productDescription:
+      'Spersonalizowana cyfrowa róża z prywatną wiadomością. Twoja na zawsze.',
   },
 }

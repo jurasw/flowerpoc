@@ -3,6 +3,8 @@ import {
   createFlowerRecord,
   getFlowerByStripeSessionId,
 } from '#/lib/flower-store'
+import { linkFlowerVoiceMessage } from '#/lib/link-flower-voice-message'
+import { isShareDeliveryMethod } from '#/lib/share-delivery-types'
 import { validateCreateFlowerInput } from '#/lib/validate-flower-input'
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -34,8 +36,20 @@ export function createFlowerFromCheckoutMetadata(
   const senderName = readMetadataString(metadata, 'senderName')
   const recipientName = readMetadataString(metadata, 'recipientName')
   const quote = readMetadataString(metadata, 'quote')
+  const senderEmail = readMetadataString(metadata, 'senderEmail')
+  const deliveryMethodRaw = readMetadataString(metadata, 'deliveryMethod')
+  const recipientEmail = readMetadataString(metadata, 'recipientEmail')
+  const recipientPhone = readMetadataString(metadata, 'recipientPhone')
+  const voiceMessageId = readMetadataString(metadata, 'voiceMessageId')
 
-  if (!senderName || !recipientName || !quote) {
+  if (
+    !senderName ||
+    !recipientName ||
+    !quote ||
+    !senderEmail ||
+    !deliveryMethodRaw ||
+    !isShareDeliveryMethod(deliveryMethodRaw)
+  ) {
     return null
   }
 
@@ -43,7 +57,17 @@ export function createFlowerFromCheckoutMetadata(
     senderName,
     recipientName,
     quote,
+    senderEmail,
+    deliveryMethod: deliveryMethodRaw,
+    recipientEmail,
+    recipientPhone,
   })
 
-  return createFlowerRecord(input, sessionId)
+  const flower = createFlowerRecord(input, sessionId, voiceMessageId)
+
+  if (voiceMessageId) {
+    linkFlowerVoiceMessage(flower.id, voiceMessageId)
+  }
+
+  return flower
 }

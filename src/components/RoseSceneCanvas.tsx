@@ -1,6 +1,7 @@
 import { Html, OrbitControls, useGLTF, useProgress } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
+  memo,
   Suspense,
   useEffect,
   useLayoutEffect,
@@ -13,7 +14,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
 import {
   fitRoseModelToViewport,
-  resetRoseModelTransform,
+  hasRoseViewportChangedSignificantly,
 } from '#/lib/fitRoseModel'
 import {
   getRoseFrameSettings,
@@ -60,7 +61,12 @@ function RoseModel({
   const entranceProgressRef = useRef(0)
   const isEntranceCompleteRef = useRef(false)
   const hasInitialOrientationRef = useRef(false)
-  const { viewport } = useThree()
+  const fittedViewportRef = useRef<{ width: number; height: number } | null>(
+    null,
+  )
+  const { gl, viewport } = useThree()
+  const viewportWidth = viewport.width
+  const viewportHeight = viewport.height
 
   useLayoutEffect(() => {
     const group = groupRef.current
@@ -68,11 +74,31 @@ function RoseModel({
       return
     }
 
-    if (viewport.width < 0.01 || viewport.height < 0.01) {
+    const parent = gl.domElement.parentElement
+    if (
+      !parent ||
+      parent.clientWidth < 64 ||
+      parent.clientHeight < 64 ||
+      viewportWidth < 0.5 ||
+      viewportHeight < 0.5
+    ) {
       return
     }
 
-    fitRoseModelToViewport(scene, group, viewport, frame)
+    const viewportSize = { width: viewportWidth, height: viewportHeight }
+
+    if (
+      isEntranceCompleteRef.current &&
+      !hasRoseViewportChangedSignificantly(
+        fittedViewportRef.current,
+        viewportSize,
+      )
+    ) {
+      return
+    }
+
+    fitRoseModelToViewport(scene, group, viewportSize, frame)
+    fittedViewportRef.current = viewportSize
     targetScaleRef.current = group.scale.x
 
     if (!hasInitialOrientationRef.current) {
@@ -91,12 +117,7 @@ function RoseModel({
         ),
       )
     }
-
-    return () => {
-      resetRoseModelTransform(scene, group)
-      hasInitialOrientationRef.current = false
-    }
-  }, [scene, viewport, frame])
+  }, [scene, viewportWidth, viewportHeight, frame])
 
   useFrame((_, delta) => {
     const group = groupRef.current
@@ -232,17 +253,29 @@ function RoseCanvasResizeObserver() {
       return
     }
 
+    let frameId = 0
+
     const observer = new ResizeObserver(() => {
-      if (parent.clientWidth < 1 || parent.clientHeight < 1) {
+      if (parent.clientWidth < 64 || parent.clientHeight < 64) {
         return
       }
 
-      gl.setSize(parent.clientWidth, parent.clientHeight, false)
-      invalidate()
+      cancelAnimationFrame(frameId)
+      frameId = requestAnimationFrame(() => {
+        if (parent.clientWidth < 64 || parent.clientHeight < 64) {
+          return
+        }
+
+        gl.setSize(parent.clientWidth, parent.clientHeight, false)
+        invalidate()
+      })
     })
 
     observer.observe(parent)
-    return () => observer.disconnect()
+    return () => {
+      cancelAnimationFrame(frameId)
+      observer.disconnect()
+    }
   }, [gl, invalidate])
 
   useEffect(() => {
@@ -254,7 +287,7 @@ function RoseCanvasResizeObserver() {
   return null
 }
 
-export function RoseSceneCanvas({
+export const RoseSceneCanvas = memo(function RoseSceneCanvas({
   className,
   autoRotate = true,
   fillRatio,
@@ -281,4 +314,4 @@ export function RoseSceneCanvas({
       </Canvas>
     </div>
   )
-}
+})

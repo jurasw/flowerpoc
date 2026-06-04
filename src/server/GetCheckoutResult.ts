@@ -1,7 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 
 import { createFlowerFromCheckoutMetadata } from '#/lib/create-flower-from-checkout'
-import { getExpiresAt } from '#/lib/flower-lifecycle'
 import type { CheckoutResult } from '#/lib/flower-types'
 import { getFlowerByStripeSessionId } from '#/lib/flower-store'
 import { getStripeClient } from '#/lib/stripe-client'
@@ -9,14 +8,17 @@ import { getStripeClient } from '#/lib/stripe-client'
 function buildCheckoutResult(flower: {
   id: string
   createdAt: string
+  deliveryMethod: CheckoutResult['deliveryMethod']
+  recipientEmail?: string
+  recipientPhone?: string
 }): CheckoutResult {
-  const expiresAt = getExpiresAt(flower.createdAt)
-
   return {
     id: flower.id,
     createdAt: flower.createdAt,
-    expiresAt: expiresAt.toISOString(),
     isReady: true,
+    deliveryMethod: flower.deliveryMethod,
+    recipientEmail: flower.recipientEmail,
+    recipientPhone: flower.recipientPhone,
   }
 }
 
@@ -65,7 +67,6 @@ export default createServerFn({ method: 'GET' })
     return {
       id: '',
       createdAt: '',
-      expiresAt: '',
       isReady: false,
     }
   })

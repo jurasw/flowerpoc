@@ -1,7 +1,6 @@
-import { Clock, Heart, Link2, Rotate3d } from 'lucide-react'
+import { Heart, Link2, Rotate3d, Sparkles } from 'lucide-react'
 
 import { useI18n } from '#/lib/i18n/i18n-context'
-import { productConfig } from '#/lib/product-config'
 
 export function LandingFeatures() {
   const { t } = useI18n()
@@ -18,9 +17,9 @@ export function LandingFeatures() {
       description: t.features.message.description,
     },
     {
-      icon: Clock,
-      title: t.features.ephemeral.title,
-      description: t.features.ephemeral.description(productConfig.lifespanDays),
+      icon: Sparkles,
+      title: t.features.lasting.title,
+      description: t.features.lasting.description,
     },
     {
       icon: Link2,
