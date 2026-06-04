@@ -20,8 +20,7 @@ export function LandingHeroPhonePanel() {
       {examples.length > 1 ? (
         <HeroExampleProgressPills
           activeIndex={view.activeIndex}
-          className="mb-0 w-full"
-          isCentered
+          className="mb-0 w-full justify-center"
           labels={examples.map((example) => example.tabLabel)}
           onSelect={view.goToIndex}
           progressCycleKey={view.progressCycleKey}

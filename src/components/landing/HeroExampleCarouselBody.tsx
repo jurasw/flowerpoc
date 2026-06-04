@@ -67,10 +67,7 @@ export function HeroExampleCarouselBody({
       >
         {isPhoneLayout && phoneStageSizerExample ? (
           <div aria-hidden className="pointer-events-none invisible">
-            <HeroExampleMessageCard
-              example={phoneStageSizerExample}
-              variant="phone"
-            />
+            <HeroExampleMessageCard example={phoneStageSizerExample} />
           </div>
         ) : null}
 
@@ -86,7 +83,6 @@ export function HeroExampleCarouselBody({
             <HeroExampleMessageCard
               example={leavingExample}
               isOverlay={!isPhoneLayout}
-              variant={isPhoneLayout ? 'phone' : 'default'}
             />
           </div>
         ) : null}
@@ -102,7 +98,6 @@ export function HeroExampleCarouselBody({
             <HeroExampleMessageCard
               example={shownExample}
               isOverlay={!isPhoneLayout}
-              variant={isPhoneLayout ? 'phone' : 'default'}
             />
           </div>
         ) : null}
