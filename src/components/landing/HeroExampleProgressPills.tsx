@@ -3,8 +3,6 @@ import { heroExampleRotationConfig } from '#/lib/hero-example-rotation-config'
 interface HeroExampleProgressPillsProps {
   activeIndex: number
   className?: string
-  isCentered?: boolean
-  isCompact?: boolean
   labels: readonly string[]
   onSelect: (index: number) => void
   progressCycleKey: number
@@ -13,8 +11,6 @@ interface HeroExampleProgressPillsProps {
 export function HeroExampleProgressPills({
   activeIndex,
   className = '',
-  isCentered = false,
-  isCompact = false,
   labels,
   onSelect,
   progressCycleKey,
@@ -24,9 +20,7 @@ export function HeroExampleProgressPills({
   return (
     <div
       aria-label={labels.join(', ')}
-      className={`relative z-30 flex items-center gap-2.5 pointer-events-auto ${
-        isCentered ? 'justify-center' : 'justify-start'
-      } ${isCompact ? 'gap-2' : 'gap-2.5 sm:gap-3'} ${className || 'mb-3 sm:mb-4 lg:mb-4'}`}
+      className={`relative z-30 mb-3 flex items-center justify-start gap-2.5 pointer-events-auto sm:mb-4 lg:mb-4 lg:gap-3 ${className}`}
       role="tablist"
     >
       {labels.map((label, index) => {
@@ -44,13 +38,7 @@ export function HeroExampleProgressPills({
             role="tab"
             type="button"
           >
-            <span
-              className={`relative block overflow-hidden rounded-full bg-rose-soft/20 ${
-                isCompact
-                  ? 'h-0.5 w-7'
-                  : 'h-1 w-9 sm:w-10 lg:h-1.5 lg:w-12'
-              }`}
-            >
+            <span className="relative block h-1 w-9 overflow-hidden rounded-full bg-rose-soft/20 sm:w-10 lg:h-1.5 lg:w-12">
               <span
                 className={`absolute inset-y-0 left-0 w-full origin-left rounded-full bg-rose-soft motion-reduce:transition-none ${
                   isActive
