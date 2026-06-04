@@ -27,6 +27,7 @@ async function ensureFlowerFromSession(
 ): Promise<CheckoutResult | null> {
   const existingFlower = await getFlowerByStripeSessionId(sessionId)
 
+  console.log('debug')
   if (existingFlower) {
     return buildCheckoutResult(existingFlower)
   }
