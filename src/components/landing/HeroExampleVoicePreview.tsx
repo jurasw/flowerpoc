@@ -85,7 +85,7 @@ export function HeroExampleVoicePreview({
         </span>
       </div>
 
-      <div className="mt-3 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+      <div className="mt-3 grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
         <button
           aria-label={playButtonLabel}
           className="inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-stone-100 transition hover:border-rose-300/30 hover:bg-white/[0.1]"

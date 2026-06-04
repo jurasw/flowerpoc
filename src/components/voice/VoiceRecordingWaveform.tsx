@@ -21,7 +21,7 @@ export function VoiceRecordingWaveform({
   onStop,
 }: VoiceRecordingWaveformProps) {
   return (
-    <div className="mt-3 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+    <div className="mt-3 grid w-full min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
       <button
         aria-label={stopLabel}
         className={stopButtonClassName}

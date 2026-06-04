@@ -46,6 +46,14 @@ export function createPlaceholderWaveformPeaks(barCount: number): number[] {
   return peaks
 }
 
+async function resumeAudioContextIfNeeded(
+  audioContext: AudioContext,
+): Promise<void> {
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume()
+  }
+}
+
 export async function decodeAudioWaveform(
   blob: Blob,
   barCount: number = voiceWaveformConfig.barCount,
@@ -54,6 +62,7 @@ export async function decodeAudioWaveform(
   const audioContext = new AudioContext()
 
   try {
+    await resumeAudioContextIfNeeded(audioContext)
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer.slice(0))
     const channelData = audioBuffer.getChannelData(0)
 

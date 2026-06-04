@@ -98,49 +98,23 @@ export function VoiceMessageRecorder({
         <p className="mt-4 text-sm text-stone-500">
           {t.createForm.voice.unsupported}
         </p>
-      ) : (
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          {!isBusy && !hasRecording ? (
-            <button
-              className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-medium text-stone-100 transition hover:border-rose-300/30 hover:bg-white/[0.1]"
-              onClick={() => {
-                void handleStart()
-              }}
-              type="button"
-            >
-              <Mic className="size-4" />
-              {t.createForm.voice.record}
-            </button>
-          ) : null}
-
-          {hasRecording && !voice.isEncoding ? (
-            <>
-              <button
-                className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 px-4 py-2.5 text-sm text-stone-400 transition hover:border-white/20 hover:text-stone-200"
-                disabled={isBusy}
-                onClick={() => {
-                  void handleStart()
-                }}
-                type="button"
-              >
-                <Mic className="size-4" />
-                {t.createForm.voice.rerecord}
-              </button>
-              <button
-                className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 px-3 py-2.5 text-sm text-stone-500 transition hover:border-rose-400/30 hover:text-rose-200"
-                onClick={handleClear}
-                type="button"
-              >
-                <Trash2 className="size-4" />
-                {t.createForm.voice.remove}
-              </button>
-            </>
-          ) : null}
+      ) : !isBusy && !hasRecording ? (
+        <div className="mt-4">
+          <button
+            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-medium text-stone-100 transition hover:border-rose-300/30 hover:bg-white/[0.1]"
+            onClick={() => {
+              void handleStart()
+            }}
+            type="button"
+          >
+            <Mic className="size-4" />
+            {t.createForm.voice.record}
+          </button>
         </div>
-      )}
+      ) : null}
 
-      {hasRecording ? (
-        <>
+      {hasRecording && !voice.isEncoding ? (
+        <div className="mt-4 w-full min-w-0 space-y-3">
           <VoiceWaveformPlayer
             audioBlob={voice.recordedBlob}
             loadingLabel={t.createForm.voice.waveformLoading}
@@ -148,10 +122,31 @@ export function VoiceMessageRecorder({
             pauseLabel={t.createForm.voice.pausePreview}
             playLabel={t.createForm.voice.playPreview}
           />
-          <p className="mt-2 text-sm text-rose-200/80">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 px-4 py-2.5 text-sm text-stone-400 transition hover:border-white/20 hover:text-stone-200"
+              disabled={isBusy}
+              onClick={() => {
+                void handleStart()
+              }}
+              type="button"
+            >
+              <Mic className="size-4" />
+              {t.createForm.voice.rerecord}
+            </button>
+            <button
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 px-3 py-2.5 text-sm text-stone-500 transition hover:border-rose-400/30 hover:text-rose-200"
+              onClick={handleClear}
+              type="button"
+            >
+              <Trash2 className="size-4" />
+              {t.createForm.voice.remove}
+            </button>
+          </div>
+          <p className="text-sm text-rose-200/80">
             {t.createForm.voice.attached}
           </p>
-        </>
+        </div>
       ) : null}
     </div>
   )

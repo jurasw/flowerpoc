@@ -84,7 +84,7 @@ export function VoiceWaveformBars({
   return (
     <div
       aria-disabled={isDisabled}
-      className={`flex h-10 min-w-0 flex-1 touch-none items-end gap-[2px] rounded-md px-0.5 ${
+      className={`flex h-10 w-full min-w-0 flex-1 touch-none items-end gap-[2px] rounded-md px-0.5 ${
         isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
       }`}
       onPointerCancel={handlePointerUp}
@@ -112,7 +112,7 @@ export function VoiceWaveformBars({
             key={`wave-bar-${index}`}
           >
             <span
-              className={`block w-full max-w-[3px] rounded-full ${
+              className={`block w-full max-w-[3px] min-h-[3px] rounded-full ${
                 isLive ? 'transition-[height] duration-75 ease-out' : 'transition-colors'
               } ${isPlayed ? 'bg-rose-300' : 'bg-white/20'}`}
               style={{ height: `${heightPercent}%` }}

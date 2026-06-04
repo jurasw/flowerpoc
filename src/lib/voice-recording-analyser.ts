@@ -9,6 +9,7 @@ export function createVoiceRecordingAnalyser(
   stream: MediaStream,
 ): VoiceRecordingAnalyser {
   const audioContext = new AudioContext()
+  void audioContext.resume()
   const source = audioContext.createMediaStreamSource(stream)
   const analyser = audioContext.createAnalyser()
   analyser.fftSize = 256
