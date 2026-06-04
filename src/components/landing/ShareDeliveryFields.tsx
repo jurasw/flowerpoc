@@ -1,6 +1,9 @@
-import { Link2, Mail, Smartphone } from 'lucide-react'
+import { Link2, Mail } from 'lucide-react'
 
-import type { ShareDeliveryMethod } from '#/lib/share-delivery-types'
+import {
+  selectableShareDeliveryMethods,
+  type ShareDeliveryMethod,
+} from '#/lib/share-delivery-types'
 import { useI18n } from '#/lib/i18n/i18n-context'
 
 const inputClassName =
@@ -13,35 +16,34 @@ interface ShareDeliveryFieldsProps {
   senderEmail: string
   deliveryMethod: ShareDeliveryMethod
   recipientEmail: string
-  recipientPhone: string
   onSenderEmailChange: (value: string) => void
   onDeliveryMethodChange: (value: ShareDeliveryMethod) => void
   onRecipientEmailChange: (value: string) => void
-  onRecipientPhoneChange: (value: string) => void
 }
 
 export function ShareDeliveryFields({
   senderEmail,
   deliveryMethod,
   recipientEmail,
-  recipientPhone,
   onSenderEmailChange,
   onDeliveryMethodChange,
   onRecipientEmailChange,
-  onRecipientPhoneChange,
 }: ShareDeliveryFieldsProps) {
   const { t } = useI18n()
   const delivery = t.createForm.delivery
 
-  const methods: {
-    value: ShareDeliveryMethod
-    icon: typeof Mail
-    label: string
-  }[] = [
-    { value: 'email', icon: Mail, label: delivery.methodEmail },
-    { value: 'phone', icon: Smartphone, label: delivery.methodPhone },
-    { value: 'link', icon: Link2, label: delivery.methodLink },
-  ]
+  const methodOptions: Record<
+    (typeof selectableShareDeliveryMethods)[number],
+    { icon: typeof Mail; label: string }
+  > = {
+    email: { icon: Mail, label: delivery.methodEmail },
+    link: { icon: Link2, label: delivery.methodLink },
+  }
+
+  const methods = selectableShareDeliveryMethods.map((value) => ({
+    value,
+    ...methodOptions[value],
+  }))
 
   return (
     <div className="space-y-5">
@@ -62,7 +64,7 @@ export function ShareDeliveryFields({
 
       <fieldset className="space-y-3">
         <legend className={labelClassName}>{delivery.methodLegend}</legend>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           {methods.map((method) => {
             const isSelected = deliveryMethod === method.value
 
@@ -104,23 +106,6 @@ export function ShareDeliveryFields({
             required
             type="email"
             value={recipientEmail}
-          />
-        </label>
-      ) : null}
-
-      {deliveryMethod === 'phone' ? (
-        <label className="block space-y-2">
-          <span className={labelClassName}>{delivery.recipientPhoneLabel}</span>
-          <input
-            autoComplete="tel"
-            className={inputClassName}
-            inputMode="tel"
-            maxLength={24}
-            onChange={(event) => onRecipientPhoneChange(event.target.value)}
-            placeholder={delivery.recipientPhonePlaceholder}
-            required
-            type="tel"
-            value={recipientPhone}
           />
         </label>
       ) : null}

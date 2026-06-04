@@ -241,6 +241,19 @@ export const en = {
     productDescription:
       'A personalized digital rose with a private message. Yours to keep.',
   },
+  roseEmail: {
+    subjectForRecipient: (senderName: string): string =>
+      `${senderName} sent you a rose`,
+    subjectForSender: 'Your rose is ready',
+    greeting: (recipientName: string): string => `Hello ${recipientName},`,
+    introFromSender: (senderName: string): string =>
+      `${senderName} created a digital rose just for you.`,
+    introOwnRose:
+      'Your digital rose is ready. Share it or open it using the link below.',
+    openRoseButton: 'Open rose',
+    qrLabel: 'Scan to open the rose',
+    footer: 'Maison de Rose — a digital rose that lasts.',
+  },
 }
 
 export type Dictionary = typeof en

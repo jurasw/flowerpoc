@@ -10,6 +10,7 @@ function buildCheckoutResult(flower: {
   id: string
   createdAt: string
   deliveryMethod: CheckoutResult['deliveryMethod']
+  senderEmail: string
   recipientEmail?: string
   recipientPhone?: string
 }): CheckoutResult {
@@ -18,6 +19,7 @@ function buildCheckoutResult(flower: {
     createdAt: flower.createdAt,
     isReady: true,
     deliveryMethod: flower.deliveryMethod,
+    senderEmail: flower.senderEmail,
     recipientEmail: flower.recipientEmail,
     recipientPhone: flower.recipientPhone,
   }

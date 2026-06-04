@@ -4,6 +4,7 @@ import {
   getFlowerByStripeSessionId,
 } from '#/lib/flower-store'
 import { linkFlowerVoiceMessage } from '#/lib/link-flower-voice-message'
+import { sendRoseDeliveryEmail } from '#/lib/send-rose-delivery-email'
 import { isShareDeliveryMethod } from '#/lib/share-delivery-types'
 import { validateCreateFlowerInput } from '#/lib/validate-flower-input'
 
@@ -41,6 +42,7 @@ export async function createFlowerFromCheckoutMetadata(
   const recipientEmail = readMetadataString(metadata, 'recipientEmail')
   const recipientPhone = readMetadataString(metadata, 'recipientPhone')
   const voiceMessageId = readMetadataString(metadata, 'voiceMessageId')
+  const locale = readMetadataString(metadata, 'locale')
 
   if (
     !senderName ||
@@ -68,6 +70,8 @@ export async function createFlowerFromCheckoutMetadata(
   if (voiceMessageId) {
     await linkFlowerVoiceMessage(flower.id, voiceMessageId)
   }
+
+  await sendRoseDeliveryEmail(flower, locale)
 
   return flower
 }

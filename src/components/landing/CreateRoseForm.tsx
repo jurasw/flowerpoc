@@ -1,7 +1,7 @@
-import { memo, useState } from 'react'
+import { useState } from 'react'
 
 import { CreateRoseFormFields } from '#/components/landing/CreateRoseFormFields'
-import { RoseScene } from '#/components/RoseScene'
+import { CreateRosePreviewPanel } from '#/components/landing/CreateRosePreviewPanel'
 import { useCreateRoseFormDraft } from '#/hooks/useCreateRoseFormDraft'
 import { useI18n } from '#/lib/i18n/i18n-context'
 import { formatProductPrice, productConfig } from '#/lib/product-config'
@@ -10,25 +10,6 @@ import {
   savePendingVoiceMessage,
 } from '#/lib/checkout-api'
 import { blobToBase64 } from '#/lib/voice-message-encoding'
-
-const RosePreviewPanel = memo(function RosePreviewPanel() {
-  const { t } = useI18n()
-
-  return (
-    <section className="flex min-h-0 flex-col lg:flex-1">
-      <div className="relative h-[min(340px,48svh)] min-h-0 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#1a1012] via-[#120a0c] to-[#0a0608] p-1 shadow-2xl shadow-black/60 ring-1 ring-white/10 sm:h-[380px] lg:h-auto lg:min-h-[480px] lg:flex-1">
-        <div className="pointer-events-none absolute inset-x-10 -top-24 h-64 rounded-full bg-wine/25 blur-[110px]" />
-        <RoseScene className="absolute inset-0" deferUntilVisible />
-        <span className="pointer-events-none absolute left-6 top-6 text-[11px] font-medium uppercase tracking-[0.3em] text-gold/70">
-          {t.createForm.preview.label}
-        </span>
-      </div>
-      <p className="mt-4 shrink-0 text-center text-sm text-stone-500">
-        {t.createForm.preview.caption}
-      </p>
-    </section>
-  )
-})
 
 interface CreateRoseFormProps {
   isCanceled?: boolean
@@ -133,7 +114,6 @@ export function CreateRoseForm({
               onQuoteChange={draft.setQuote}
               onRecipientEmailChange={draft.setRecipientEmail}
               onRecipientNameChange={draft.setRecipientName}
-              onRecipientPhoneChange={draft.setRecipientPhone}
               onSenderEmailChange={draft.setSenderEmail}
               onSenderNameChange={draft.setSenderName}
               onSubmit={handleSubmit}
@@ -143,14 +123,18 @@ export function CreateRoseForm({
               quote={draft.quote}
               recipientEmail={draft.recipientEmail}
               recipientName={draft.recipientName}
-              recipientPhone={draft.recipientPhone}
               restoredVoiceRecording={restoredVoiceRecording}
               senderEmail={draft.senderEmail}
               senderName={draft.senderName}
             />
           </div>
 
-          <RosePreviewPanel />
+          <CreateRosePreviewPanel
+            quote={draft.quote}
+            recipientName={draft.recipientName}
+            senderName={draft.senderName}
+            voiceBlob={draft.voiceBlob}
+          />
         </div>
       </div>
     </section>

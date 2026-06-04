@@ -55,6 +55,7 @@ export const Route = createFileRoute('/api/checkout/session')({
             quote: validated.quote,
             senderEmail: validated.senderEmail,
             deliveryMethod: validated.deliveryMethod,
+            locale,
             ...(validated.recipientEmail
               ? { recipientEmail: validated.recipientEmail }
               : {}),

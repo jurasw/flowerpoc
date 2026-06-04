@@ -17,7 +17,6 @@ interface CreateRoseFormFieldsProps {
   senderEmail: string
   deliveryMethod: ShareDeliveryMethod
   recipientEmail: string
-  recipientPhone: string
   error: string | null
   isSubmitting: boolean
   isFinalizing: boolean
@@ -29,7 +28,6 @@ interface CreateRoseFormFieldsProps {
   onSenderEmailChange: (value: string) => void
   onDeliveryMethodChange: (value: ShareDeliveryMethod) => void
   onRecipientEmailChange: (value: string) => void
-  onRecipientPhoneChange: (value: string) => void
   onVoiceError: (message: string) => void
   onVoiceRecordingChange: (blob: Blob | null, mimeType: string | null) => void
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
@@ -42,7 +40,6 @@ export function CreateRoseFormFields({
   senderEmail,
   deliveryMethod,
   recipientEmail,
-  recipientPhone,
   error,
   isSubmitting,
   isFinalizing,
@@ -54,7 +51,6 @@ export function CreateRoseFormFields({
   onSenderEmailChange,
   onDeliveryMethodChange,
   onRecipientEmailChange,
-  onRecipientPhoneChange,
   onVoiceError,
   onVoiceRecordingChange,
   onSubmit,
@@ -105,10 +101,8 @@ export function CreateRoseFormFields({
         deliveryMethod={deliveryMethod}
         onDeliveryMethodChange={onDeliveryMethodChange}
         onRecipientEmailChange={onRecipientEmailChange}
-        onRecipientPhoneChange={onRecipientPhoneChange}
         onSenderEmailChange={onSenderEmailChange}
         recipientEmail={recipientEmail}
-        recipientPhone={recipientPhone}
         senderEmail={senderEmail}
       />
 

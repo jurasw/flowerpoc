@@ -6,7 +6,10 @@ import {
   readCreateRoseFormDraft,
   writeCreateRoseFormDraft,
 } from '#/lib/create-rose-form-draft-store'
-import type { ShareDeliveryMethod } from '#/lib/share-delivery-types'
+import {
+  normalizeSelectableShareDeliveryMethod,
+  type ShareDeliveryMethod,
+} from '#/lib/share-delivery-types'
 
 const draftSaveDelayMs = 400
 
@@ -45,7 +48,7 @@ export function useCreateRoseFormDraft(): UseCreateRoseFormDraftResult {
       setRecipientName(draft.recipientName)
       setQuote(draft.quote)
       setSenderEmail(draft.senderEmail)
-      setDeliveryMethod(draft.deliveryMethod)
+      setDeliveryMethod(normalizeSelectableShareDeliveryMethod(draft.deliveryMethod))
       setRecipientEmail(draft.recipientEmail)
       setRecipientPhone(draft.recipientPhone)
       setVoiceBlob(draft.voiceBlob)

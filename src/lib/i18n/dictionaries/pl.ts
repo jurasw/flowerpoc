@@ -249,4 +249,17 @@ export const pl: Dictionary = {
     productDescription:
       'Spersonalizowana cyfrowa róża z prywatną wiadomością. Twoja na zawsze.',
   },
+  roseEmail: {
+    subjectForRecipient: (senderName: string): string =>
+      `${senderName} podarował Ci różę`,
+    subjectForSender: 'Twoja róża jest gotowa',
+    greeting: (recipientName: string): string => `Cześć ${recipientName},`,
+    introFromSender: (senderName: string): string =>
+      `${senderName} stworzył dla Ciebie cyfrową różę.`,
+    introOwnRose:
+      'Twoja cyfrowa róża jest gotowa. Udostępnij ją lub otwórz link poniżej.',
+    openRoseButton: 'Otwórz różę',
+    qrLabel: 'Zeskanuj, aby otworzyć różę',
+    footer: 'Maison de Rose — cyfrowa róża na zawsze.',
+  },
 }

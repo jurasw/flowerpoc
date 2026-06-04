@@ -34,6 +34,7 @@ export interface CheckoutResult {
   createdAt: string
   isReady: boolean
   deliveryMethod?: ShareDeliveryMethod
+  senderEmail?: string
   recipientEmail?: string
   recipientPhone?: string
 }

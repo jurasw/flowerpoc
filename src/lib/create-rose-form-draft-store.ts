@@ -5,7 +5,10 @@ import {
   type StoredCreateRoseFormDraft,
   type StoredCreateRoseFormVoice,
 } from '#/lib/create-rose-form-draft-types'
-import { isShareDeliveryMethod } from '#/lib/share-delivery-types'
+import {
+  isShareDeliveryMethod,
+  normalizeSelectableShareDeliveryMethod,
+} from '#/lib/share-delivery-types'
 import { isAllowedVoiceMimeType } from '#/lib/voice-message-mime'
 import { voiceMessageConfig } from '#/lib/voice-message-config'
 import { base64ToBlob, blobToBase64 } from '#/lib/voice-message-encoding'
@@ -138,7 +141,7 @@ export function readCreateRoseFormDraft(): CreateRoseFormDraftFields | null {
       recipientName: stored.recipientName,
       quote: stored.quote,
       senderEmail: stored.senderEmail,
-      deliveryMethod: stored.deliveryMethod,
+      deliveryMethod: normalizeSelectableShareDeliveryMethod(stored.deliveryMethod),
       recipientEmail: stored.recipientEmail,
       recipientPhone: stored.recipientPhone,
       voiceBlob,
@@ -179,7 +182,7 @@ export async function writeCreateRoseFormDraft(
     recipientName: fields.recipientName.slice(0, fieldLimits.recipientName),
     quote: fields.quote.slice(0, fieldLimits.quote),
     senderEmail: fields.senderEmail.slice(0, fieldLimits.senderEmail),
-    deliveryMethod: fields.deliveryMethod,
+    deliveryMethod: normalizeSelectableShareDeliveryMethod(fields.deliveryMethod),
     recipientEmail: fields.recipientEmail.slice(0, fieldLimits.recipientEmail),
     recipientPhone: fields.recipientPhone.slice(0, fieldLimits.recipientPhone),
   }

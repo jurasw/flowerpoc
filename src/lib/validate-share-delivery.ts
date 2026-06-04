@@ -2,7 +2,6 @@ import type { ShareDeliveryMethod } from '#/lib/share-delivery-types'
 import { isShareDeliveryMethod } from '#/lib/share-delivery-types'
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const phonePattern = /^\+?[\d\s\-()]{7,20}$/
 
 export interface ShareDeliveryFields {
   senderEmail: string
@@ -36,13 +35,7 @@ export function validateShareDelivery(
   }
 
   if (deliveryMethod === 'phone') {
-    const recipientPhone = data.recipientPhone?.trim() ?? ''
-
-    if (!recipientPhone || !phonePattern.test(recipientPhone)) {
-      throw new Error('A valid recipient phone number is required.')
-    }
-
-    return { senderEmail, deliveryMethod, recipientPhone }
+    throw new Error('Phone delivery is not available.')
   }
 
   return { senderEmail, deliveryMethod }

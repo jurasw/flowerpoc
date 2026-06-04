@@ -12,10 +12,12 @@ interface CheckoutDeliveryPanelProps {
 
 function DeliveryStatus({
   deliveryMethod,
+  senderEmail,
   recipientEmail,
   recipientPhone,
 }: {
   deliveryMethod: ShareDeliveryMethod
+  senderEmail?: string
   recipientEmail?: string
   recipientPhone?: string
 }) {
@@ -41,6 +43,18 @@ function DeliveryStatus({
         <MessageSquare className="size-4 shrink-0 text-emerald-300/90" />
         <span className="text-sm font-medium text-emerald-100">
           {success.smsSent(recipientPhone)}
+        </span>
+      </div>
+    )
+  }
+
+  if (senderEmail) {
+    return (
+      <div className="flex flex-wrap items-center justify-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] px-4 py-3">
+        <CheckCircle2 className="size-4 shrink-0 text-emerald-100" />
+        <Mail className="size-4 shrink-0 text-emerald-300/90" />
+        <span className="text-sm font-medium text-emerald-100">
+          {success.emailSent(senderEmail)}
         </span>
       </div>
     )
@@ -82,6 +96,7 @@ export function CheckoutDeliveryPanel({ result }: CheckoutDeliveryPanelProps) {
           deliveryMethod={deliveryMethod}
           recipientEmail={result.recipientEmail}
           recipientPhone={result.recipientPhone}
+          senderEmail={result.senderEmail}
         />
       </div>
 
