@@ -24,7 +24,7 @@ export function LandingValueStrip() {
   ]
 
   return (
-    <section className="border-y border-white/5 bg-white/[0.02] px-6 py-10">
+    <section className="border-y border-white/5 bg-white/[0.02] px-4 py-10 sm:px-6">
       <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-3">
         {valueItems.map((item) => (
           <div className="flex items-start gap-4" key={item.label}>

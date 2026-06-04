@@ -118,7 +118,7 @@ export function CreateRoseForm({
 
   return (
     <section
-      className="border-t border-white/5 bg-black px-6 py-20 sm:py-24"
+      className="border-t border-white/5 bg-black px-4 py-20 sm:px-6 sm:py-24"
       id="create"
     >
       <div className="mx-auto max-w-6xl">

@@ -76,7 +76,7 @@ export function HeroExampleVoicePreview({
           : 'mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5'
       }
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
         <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-gold/80">
           {label}
         </p>
@@ -85,7 +85,7 @@ export function HeroExampleVoicePreview({
         </span>
       </div>
 
-      <div className="mt-3 flex items-center gap-3">
+      <div className="mt-3 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
         <button
           aria-label={playButtonLabel}
           className="inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-stone-100 transition hover:border-rose-300/30 hover:bg-white/[0.1]"

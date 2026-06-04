@@ -1,12 +1,10 @@
 import { Check } from 'lucide-react'
 
-import { useScrollReveal } from '#/hooks/useScrollReveal'
 import { useI18n } from '#/lib/i18n/i18n-context'
 import { formatProductPrice } from '#/lib/product-config'
 
 export function LandingPricing() {
   const { t } = useI18n()
-  const { ref: pricingCardRef, isRevealed } = useScrollReveal()
 
   const includedItems = [
     t.pricing.included.rose,
@@ -16,7 +14,7 @@ export function LandingPricing() {
   ]
 
   return (
-    <section className="px-6 py-20 sm:py-24" id="pricing">
+    <section className="px-4 py-20 sm:px-6 sm:py-24" id="pricing">
       <div className="mx-auto max-w-6xl">
         <p className="text-center text-[11px] font-semibold uppercase tracking-[0.35em] text-gold/70">
           {t.pricing.eyebrow}
@@ -26,14 +24,7 @@ export function LandingPricing() {
         </h2>
 
         <div className="mx-auto mt-14 max-w-md">
-          <article
-            className={`rounded-[2rem] border border-rose-300/20 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-8 shadow-2xl shadow-wine/10 backdrop-blur transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
-              isRevealed
-                ? 'translate-y-0 opacity-100'
-                : 'translate-y-8 opacity-0'
-            }`}
-            ref={pricingCardRef}
-          >
+          <article className="rounded-[2rem] border border-rose-300/20 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-8 shadow-2xl shadow-wine/10 backdrop-blur">
             <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-rose-300/80">
               {t.checkout.productName}
             </p>

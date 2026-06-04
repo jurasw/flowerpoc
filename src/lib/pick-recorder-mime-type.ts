@@ -5,7 +5,7 @@ export function pickRecorderMimeType(): string | undefined {
     return undefined
   }
 
-  for (const mimeType of voiceMessageConfig.allowedMimeTypes) {
+  for (const mimeType of voiceMessageConfig.recorderMimeTypes) {
     if (MediaRecorder.isTypeSupported(mimeType)) {
       return mimeType
     }

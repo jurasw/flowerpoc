@@ -52,7 +52,7 @@ export function HeroExampleMessageCard({
 
       <div className="mt-5 h-px w-12 bg-gradient-to-r from-gold/70 to-transparent" />
 
-      <blockquote className="mt-5 font-serif text-lg leading-relaxed text-stone-50 sm:text-xl">
+      <blockquote className="mt-5 break-words font-serif text-base leading-relaxed text-stone-50 sm:text-lg md:text-xl">
         <span className="italic">“{example.quote}”</span>
       </blockquote>
 

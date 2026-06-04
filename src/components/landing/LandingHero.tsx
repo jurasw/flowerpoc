@@ -4,8 +4,8 @@ import { LandingHeroRoseExamples } from '#/components/landing/LandingHeroRoseExa
 import { RoseScene } from '#/components/RoseScene'
 import { useI18n } from '#/lib/i18n/i18n-context'
 
-const heroRosePanelHeightClass =
-  'h-[min(100vw-3rem,36rem)] sm:h-[38rem] lg:h-[42rem]'
+const heroRoseViewportHeightClass =
+  'h-[min(72vw,22rem)] w-full sm:h-[26rem] lg:h-[42rem]'
 
 const heroRoseFrameSettings = {
   fillRatio: 0.7,
@@ -21,7 +21,7 @@ function LandingHeroCopy() {
         {t.checkout.productName}
       </p>
 
-      <h1 className="mt-5 font-serif text-5xl font-medium leading-[1.02] tracking-tight text-white sm:text-6xl lg:text-7xl">
+      <h1 className="mt-5 font-serif text-4xl font-medium leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
         {t.hero.titleLineOne}
         <br />
         <span className="italic text-rose-300">{t.hero.titleLineTwo}</span>
@@ -55,15 +55,17 @@ function LandingHeroCopy() {
 
 const LandingHeroRosePanel = memo(function LandingHeroRosePanel() {
   return (
-    <div className="relative mx-auto w-full max-w-lg shrink-0 [contain:layout] lg:mx-0 lg:max-w-none">
-      <div className={`relative ${heroRosePanelHeightClass}`}>
-        <RoseScene
-          className="absolute inset-0"
-          deferUntilVisible
-          frameSettings={heroRoseFrameSettings}
-        />
+    <div className="relative mx-auto w-full max-w-lg shrink-0 lg:mx-0 lg:max-w-none">
+      <div className="flex flex-col gap-4 lg:relative lg:h-[42rem] lg:gap-0">
+        <div className={`relative ${heroRoseViewportHeightClass}`}>
+          <RoseScene
+            className="absolute inset-0"
+            deferUntilVisible
+            frameSettings={heroRoseFrameSettings}
+          />
+        </div>
 
-        <LandingHeroRoseExamples className="absolute inset-x-0 bottom-0 z-10" />
+        <LandingHeroRoseExamples className="relative z-10 shrink-0 lg:absolute lg:inset-x-0 lg:bottom-0" />
       </div>
     </div>
   )
@@ -72,7 +74,7 @@ const LandingHeroRosePanel = memo(function LandingHeroRosePanel() {
 export function LandingHero() {
   return (
     <section
-      className="relative overflow-hidden px-6 pb-16 pt-12 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20"
+      className="relative overflow-hidden px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20"
       id="top"
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(ellipse_at_top,_rgba(124,31,51,0.22)_0%,_transparent_70%)]" />

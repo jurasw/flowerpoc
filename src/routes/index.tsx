@@ -61,7 +61,7 @@ function LandingPage() {
   useLandingAnchorScroll()
 
   return (
-    <div className="min-h-screen bg-black text-stone-100">
+    <div className="min-h-screen overflow-x-hidden bg-black text-stone-100">
       <LandingHeader />
       <main>
         <LandingHero />

@@ -21,7 +21,7 @@ export function LandingHowItWorks() {
   ]
 
   return (
-    <section className="px-6 py-20 sm:py-24" id="how-it-works">
+    <section className="px-4 py-20 sm:px-6 sm:py-24" id="how-it-works">
       <div className="mx-auto max-w-6xl">
         <p className="text-center text-[11px] font-semibold uppercase tracking-[0.35em] text-gold/70">
           {t.howItWorks.eyebrow}

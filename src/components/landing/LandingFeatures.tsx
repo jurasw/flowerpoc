@@ -30,7 +30,7 @@ export function LandingFeatures() {
 
   return (
     <section
-      className="border-t border-white/5 bg-[radial-gradient(ellipse_at_center,_rgba(124,31,51,0.08)_0%,_transparent_70%)] px-6 py-20 sm:py-24"
+      className="border-t border-white/5 bg-[radial-gradient(ellipse_at_center,_rgba(124,31,51,0.08)_0%,_transparent_70%)] px-4 py-20 sm:px-6 sm:py-24"
       id="features"
     >
       <div className="mx-auto max-w-6xl">

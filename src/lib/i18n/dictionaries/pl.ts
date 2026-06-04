@@ -174,6 +174,7 @@ export const pl: Dictionary = {
       remove: 'Usuń',
       attached: 'Wiadomość głosowa dołączona — wyślemy ją wraz z różą.',
       recording: (time: string): string => `Nagrywanie ${time}`,
+      encoding: 'Kompresja do MP3…',
       unsupported:
         'Nagrywanie głosu nie jest obsługiwane w tej przeglądarce.',
       errors: {
@@ -183,6 +184,8 @@ export const pl: Dictionary = {
           'Nie nagrano dźwięku. Spróbuj nagrać wiadomość ponownie.',
         microphoneRequired:
           'Do nagrania wiadomości głosowej potrzebny jest dostęp do mikrofonu.',
+        encodingFailed:
+          'Nie udało się przygotować wiadomości głosowej. Spróbuj nagrać ponownie.',
         previewPlaybackFailed:
           'Nie udało się odtworzyć podglądu wiadomości głosowej.',
       },

@@ -171,6 +171,7 @@ export const en = {
       remove: 'Remove',
       attached: 'Voice message attached — it will be sent with your rose.',
       recording: (time: string): string => `Recording ${time}`,
+      encoding: 'Compressing to MP3…',
       unsupported: 'Voice recording is not supported in this browser.',
       errors: {
         unsupportedBrowser:
@@ -178,6 +179,8 @@ export const en = {
         noAudioCaptured: 'No audio was captured. Try recording again.',
         microphoneRequired:
           'Microphone access is required to record a voice message.',
+        encodingFailed:
+          'Could not prepare the voice message. Try recording again.',
         previewPlaybackFailed:
           'Could not play the voice message preview.',
       },

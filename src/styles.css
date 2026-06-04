@@ -26,6 +26,12 @@ html {
   scrollbar-gutter: stable;
 }
 
+@media (max-width: 767px) {
+  html {
+    scroll-padding-top: 7.25rem;
+  }
+}
+
 html,
 body,
 #app {
@@ -36,8 +42,15 @@ body,
   scroll-margin-top: 5rem;
 }
 
+@media (max-width: 767px) {
+  [id] {
+    scroll-margin-top: 7.25rem;
+  }
+}
+
 body {
   margin: 0;
+  overflow-x: hidden;
   font-family: var(--font-sans);
   background: #000000;
   color: #f5f5f4;

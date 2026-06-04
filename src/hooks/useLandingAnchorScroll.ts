@@ -2,8 +2,34 @@ import { useEffect } from 'react'
 
 import { scrollToAnchor } from '#/lib/scroll-to-anchor'
 
+function clearUrlHash(): void {
+  const { pathname, search } = window.location
+  window.history.replaceState(window.history.state, '', `${pathname}${search}`)
+}
+
+function getAnchorIdFromHash(hash: string): string | null {
+  if (!hash || hash === '#') {
+    return null
+  }
+
+  const anchorId = hash.slice(1)
+
+  if (!document.getElementById(anchorId)) {
+    return null
+  }
+
+  return anchorId
+}
+
 export function useLandingAnchorScroll(): void {
   useEffect(() => {
+    const initialAnchorId = getAnchorIdFromHash(window.location.hash)
+
+    if (initialAnchorId) {
+      scrollToAnchor(initialAnchorId)
+      clearUrlHash()
+    }
+
     function handleClick(event: MouseEvent): void {
       const target = event.target
 
@@ -17,24 +43,15 @@ export function useLandingAnchorScroll(): void {
         return
       }
 
-      const hash = anchor.getAttribute('href')
+      const anchorId = getAnchorIdFromHash(anchor.getAttribute('href') ?? '')
 
-      if (!hash || hash === '#') {
-        return
-      }
-
-      const anchorId = hash.slice(1)
-
-      if (!document.getElementById(anchorId)) {
+      if (!anchorId) {
         return
       }
 
       event.preventDefault()
       scrollToAnchor(anchorId)
-
-      if (window.history.replaceState) {
-        window.history.replaceState(null, '', hash)
-      }
+      clearUrlHash()
     }
 
     document.addEventListener('click', handleClick)

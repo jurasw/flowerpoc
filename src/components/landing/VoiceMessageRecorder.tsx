@@ -64,6 +64,7 @@ export function VoiceMessageRecorder({
   }
 
   const hasRecording = voice.recordedBlob !== null
+  const isBusy = voice.isRecording || voice.isEncoding
 
   return (
     <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
@@ -87,13 +88,19 @@ export function VoiceMessageRecorder({
         />
       ) : null}
 
+      {voice.isEncoding ? (
+        <p className="mt-4 text-sm text-stone-400">
+          {t.createForm.voice.encoding}
+        </p>
+      ) : null}
+
       {!voice.canRecord ? (
         <p className="mt-4 text-sm text-stone-500">
           {t.createForm.voice.unsupported}
         </p>
       ) : (
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          {!voice.isRecording && !hasRecording ? (
+          {!isBusy && !hasRecording ? (
             <button
               className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 bg-white/[0.06] px-4 py-2.5 text-sm font-medium text-stone-100 transition hover:border-rose-300/30 hover:bg-white/[0.1]"
               onClick={() => {
@@ -106,10 +113,11 @@ export function VoiceMessageRecorder({
             </button>
           ) : null}
 
-          {hasRecording ? (
+          {hasRecording && !voice.isEncoding ? (
             <>
               <button
                 className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-white/10 px-4 py-2.5 text-sm text-stone-400 transition hover:border-white/20 hover:text-stone-200"
+                disabled={isBusy}
                 onClick={() => {
                   void handleStart()
                 }}

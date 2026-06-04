@@ -17,6 +17,7 @@ interface UseVoiceRecorderResult {
   recordedBlob: Blob | null
   recordedMimeType: string | null
   isRecording: boolean
+  isEncoding: boolean
   recordingSeconds: number
   recordingPeaks: number[]
   canRecord: boolean
@@ -32,6 +33,7 @@ export function useVoiceRecorder({
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null)
   const [recordedMimeType, setRecordedMimeType] = useState<string | null>(null)
   const [isRecording, setIsRecording] = useState(false)
+  const [isEncoding, setIsEncoding] = useState(false)
   const [recordingSeconds, setRecordingSeconds] = useState(0)
   const [recordingPeaks, setRecordingPeaks] = useState<number[]>([])
 
@@ -94,7 +96,35 @@ export function useVoiceRecorder({
     setRecordedBlob(null)
     setRecordedMimeType(null)
     setRecordingSeconds(0)
+    setIsEncoding(false)
   }, [])
+
+  const finalizeRecording = useCallback(
+    async (sourceBlob: Blob) => {
+      setIsEncoding(true)
+
+      try {
+        const { encodeVoiceBlobToMp3 } = await import(
+          '#/lib/encode-voice-blob-to-mp3'
+        )
+        const mp3Blob = await encodeVoiceBlobToMp3(sourceBlob)
+
+        if (mp3Blob.size === 0) {
+          onError('noAudioCaptured')
+          return
+        }
+
+        setRecordedBlob(mp3Blob)
+        setRecordedMimeType(voiceMessageConfig.outputMimeType)
+        setRecordingSeconds(0)
+      } catch {
+        onError('encodingFailed')
+      } finally {
+        setIsEncoding(false)
+      }
+    },
+    [onError],
+  )
 
   const restoreRecording = useCallback((recording: RestoredVoiceRecording) => {
     setRecordedBlob(recording.blob)
@@ -173,9 +203,7 @@ export function useVoiceRecorder({
           return
         }
 
-        setRecordedBlob(blob)
-        setRecordedMimeType(recorderMimeType)
-        setRecordingSeconds(0)
+        void finalizeRecording(blob)
       }
 
       recorder.start(250)
@@ -191,6 +219,7 @@ export function useVoiceRecorder({
   }, [
     clearRecording,
     clearRecordingTimer,
+    finalizeRecording,
     onError,
     recorderMimeType,
     startRecordingAnalyser,
@@ -216,6 +245,7 @@ export function useVoiceRecorder({
     recordedBlob,
     recordedMimeType,
     isRecording,
+    isEncoding,
     recordingSeconds,
     recordingPeaks,
     canRecord,
