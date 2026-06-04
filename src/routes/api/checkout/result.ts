@@ -1,4 +1,5 @@
-import { createServerFn } from '@tanstack/react-start'
+import { createFileRoute } from '@tanstack/react-router'
+import { json } from '@tanstack/react-start'
 
 import { createFlowerFromCheckoutMetadata } from '#/lib/create-flower-from-checkout'
 import type { CheckoutResult } from '#/lib/flower-types'
@@ -27,7 +28,6 @@ async function ensureFlowerFromSession(
 ): Promise<CheckoutResult | null> {
   const existingFlower = await getFlowerByStripeSessionId(sessionId)
 
-  console.log('debug')
   if (existingFlower) {
     return buildCheckoutResult(existingFlower)
   }
@@ -51,26 +51,30 @@ async function ensureFlowerFromSession(
   return buildCheckoutResult(flower)
 }
 
-export default createServerFn({ method: 'GET' })
-  .inputValidator((data: { sessionId: string }) => {
-    const sessionId = data.sessionId.trim()
+export const Route = createFileRoute('/api/checkout/result')({
+  server: {
+    handlers: {
+      GET: async ({ request }) => {
+        const sessionId = new URL(request.url).searchParams
+          .get('sessionId')
+          ?.trim()
 
-    if (!sessionId) {
-      throw new Error('Session id is required.')
-    }
+        if (!sessionId) {
+          return json({ error: 'Session id is required.' }, { status: 400 })
+        }
 
-    return { sessionId }
-  })
-  .handler(async ({ data }): Promise<CheckoutResult> => {
-    const flower = await ensureFlowerFromSession(data.sessionId)
+        const flower = await ensureFlowerFromSession(sessionId)
 
-    if (flower) {
-      return flower
-    }
+        if (flower) {
+          return json(flower)
+        }
 
-    return {
-      id: '',
-      createdAt: '',
-      isReady: false,
-    }
-  })
+        return json({
+          id: '',
+          createdAt: '',
+          isReady: false,
+        } satisfies CheckoutResult)
+      },
+    },
+  },
+})

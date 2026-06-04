@@ -1,4 +1,3 @@
-import { useServerFn } from '@tanstack/react-start'
 import { memo, useEffect, useState } from 'react'
 
 import { CheckoutSuccessPanel } from '#/components/landing/CheckoutSuccessPanel'
@@ -8,9 +7,11 @@ import { useCheckoutPolling } from '#/hooks/useCheckoutPolling'
 import { useCreateRoseFormDraft } from '#/hooks/useCreateRoseFormDraft'
 import { useI18n } from '#/lib/i18n/i18n-context'
 import { formatProductPrice, productConfig } from '#/lib/product-config'
+import {
+  createCheckoutSession,
+  savePendingVoiceMessage,
+} from '#/lib/checkout-api'
 import { blobToBase64 } from '#/lib/voice-message-encoding'
-import createCheckoutSession from '#/server/CreateCheckoutSession'
-import savePendingVoiceMessage from '#/server/SavePendingVoiceMessage'
 
 const RosePreviewPanel = memo(function RosePreviewPanel() {
   const { t } = useI18n()
@@ -41,8 +42,6 @@ export function CreateRoseForm({
   isCanceled = false,
 }: CreateRoseFormProps) {
   const { locale, t } = useI18n()
-  const createCheckoutSessionFn = useServerFn(createCheckoutSession)
-  const savePendingVoiceMessageFn = useServerFn(savePendingVoiceMessage)
   const {
     result,
     error: checkoutError,
@@ -76,29 +75,25 @@ export function CreateRoseForm({
       let voiceMessageId: string | undefined
 
       if (draft.voiceBlob && draft.voiceMimeType) {
-        const upload = await savePendingVoiceMessageFn({
-          data: {
-            mimeType: draft.voiceMimeType,
-            dataBase64: await blobToBase64(draft.voiceBlob),
-          },
+        const upload = await savePendingVoiceMessage({
+          mimeType: draft.voiceMimeType,
+          dataBase64: await blobToBase64(draft.voiceBlob),
         })
         voiceMessageId = upload.voiceMessageId
       }
 
-      const checkout = await createCheckoutSessionFn({
-        data: {
-          senderName: draft.senderName,
-          recipientName: draft.recipientName,
-          quote: draft.quote,
-          senderEmail: draft.senderEmail,
-          deliveryMethod: draft.deliveryMethod,
-          recipientEmail:
-            draft.deliveryMethod === 'email' ? draft.recipientEmail : undefined,
-          recipientPhone:
-            draft.deliveryMethod === 'phone' ? draft.recipientPhone : undefined,
-          locale,
-          voiceMessageId,
-        },
+      const checkout = await createCheckoutSession({
+        senderName: draft.senderName,
+        recipientName: draft.recipientName,
+        quote: draft.quote,
+        senderEmail: draft.senderEmail,
+        deliveryMethod: draft.deliveryMethod,
+        recipientEmail:
+          draft.deliveryMethod === 'email' ? draft.recipientEmail : undefined,
+        recipientPhone:
+          draft.deliveryMethod === 'phone' ? draft.recipientPhone : undefined,
+        locale,
+        voiceMessageId,
       })
       window.location.assign(checkout.url)
     } catch (caughtError) {

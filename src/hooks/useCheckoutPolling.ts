@@ -1,9 +1,8 @@
-import { useServerFn } from '@tanstack/react-start'
 import { useEffect, useState } from 'react'
 
+import { getCheckoutResult } from '#/lib/checkout-api'
 import type { CheckoutResult } from '#/lib/flower-types'
 import type { Dictionary } from '#/lib/i18n/dictionaries/en'
-import getCheckoutResult from '#/server/GetCheckoutResult'
 
 const pollAttempts = 5
 const pollDelayMs = 1500
@@ -18,7 +17,6 @@ export function useCheckoutPolling(
   sessionId: string | undefined,
   t: Dictionary['createForm'],
 ): UseCheckoutPollingResult {
-  const getCheckoutResultFn = useServerFn(getCheckoutResult)
   const [result, setResult] = useState<CheckoutResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isFinalizing, setIsFinalizing] = useState(Boolean(sessionId))
@@ -35,9 +33,7 @@ export function useCheckoutPolling(
     async function pollCheckoutResult(): Promise<void> {
       while (attempt < pollAttempts && !isCancelled) {
         try {
-          const checkoutResult = await getCheckoutResultFn({
-            data: { sessionId: activeSessionId },
-          })
+          const checkoutResult = await getCheckoutResult(activeSessionId)
 
           if (checkoutResult.isReady) {
             if (!isCancelled) {
@@ -74,7 +70,7 @@ export function useCheckoutPolling(
     return () => {
       isCancelled = true
     }
-  }, [sessionId, getCheckoutResultFn, t])
+  }, [sessionId, t])
 
   return { result, error, isFinalizing }
 }

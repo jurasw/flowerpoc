@@ -11,7 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FlowerIdRouteImport } from './routes/flower/$id'
+import { Route as ApiVoiceMessagesPendingRouteImport } from './routes/api/voice-messages/pending'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
+import { Route as ApiCheckoutSessionRouteImport } from './routes/api/checkout/session'
+import { Route as ApiCheckoutResultRouteImport } from './routes/api/checkout/result'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,40 +26,86 @@ const FlowerIdRoute = FlowerIdRouteImport.update({
   path: '/flower/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiVoiceMessagesPendingRoute = ApiVoiceMessagesPendingRouteImport.update({
+  id: '/api/voice-messages/pending',
+  path: '/api/voice-messages/pending',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
   id: '/api/stripe/webhook',
   path: '/api/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCheckoutSessionRoute = ApiCheckoutSessionRouteImport.update({
+  id: '/api/checkout/session',
+  path: '/api/checkout/session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCheckoutResultRoute = ApiCheckoutResultRouteImport.update({
+  id: '/api/checkout/result',
+  path: '/api/checkout/result',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/flower/$id': typeof FlowerIdRoute
+  '/api/checkout/result': typeof ApiCheckoutResultRoute
+  '/api/checkout/session': typeof ApiCheckoutSessionRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/voice-messages/pending': typeof ApiVoiceMessagesPendingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/flower/$id': typeof FlowerIdRoute
+  '/api/checkout/result': typeof ApiCheckoutResultRoute
+  '/api/checkout/session': typeof ApiCheckoutSessionRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/voice-messages/pending': typeof ApiVoiceMessagesPendingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/flower/$id': typeof FlowerIdRoute
+  '/api/checkout/result': typeof ApiCheckoutResultRoute
+  '/api/checkout/session': typeof ApiCheckoutSessionRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/voice-messages/pending': typeof ApiVoiceMessagesPendingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/flower/$id' | '/api/stripe/webhook'
+  fullPaths:
+    | '/'
+    | '/flower/$id'
+    | '/api/checkout/result'
+    | '/api/checkout/session'
+    | '/api/stripe/webhook'
+    | '/api/voice-messages/pending'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/flower/$id' | '/api/stripe/webhook'
-  id: '__root__' | '/' | '/flower/$id' | '/api/stripe/webhook'
+  to:
+    | '/'
+    | '/flower/$id'
+    | '/api/checkout/result'
+    | '/api/checkout/session'
+    | '/api/stripe/webhook'
+    | '/api/voice-messages/pending'
+  id:
+    | '__root__'
+    | '/'
+    | '/flower/$id'
+    | '/api/checkout/result'
+    | '/api/checkout/session'
+    | '/api/stripe/webhook'
+    | '/api/voice-messages/pending'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FlowerIdRoute: typeof FlowerIdRoute
+  ApiCheckoutResultRoute: typeof ApiCheckoutResultRoute
+  ApiCheckoutSessionRoute: typeof ApiCheckoutSessionRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
+  ApiVoiceMessagesPendingRoute: typeof ApiVoiceMessagesPendingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,11 +124,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlowerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/voice-messages/pending': {
+      id: '/api/voice-messages/pending'
+      path: '/api/voice-messages/pending'
+      fullPath: '/api/voice-messages/pending'
+      preLoaderRoute: typeof ApiVoiceMessagesPendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/stripe/webhook': {
       id: '/api/stripe/webhook'
       path: '/api/stripe/webhook'
       fullPath: '/api/stripe/webhook'
       preLoaderRoute: typeof ApiStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/checkout/session': {
+      id: '/api/checkout/session'
+      path: '/api/checkout/session'
+      fullPath: '/api/checkout/session'
+      preLoaderRoute: typeof ApiCheckoutSessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/checkout/result': {
+      id: '/api/checkout/result'
+      path: '/api/checkout/result'
+      fullPath: '/api/checkout/result'
+      preLoaderRoute: typeof ApiCheckoutResultRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -88,7 +158,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FlowerIdRoute: FlowerIdRoute,
+  ApiCheckoutResultRoute: ApiCheckoutResultRoute,
+  ApiCheckoutSessionRoute: ApiCheckoutSessionRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
+  ApiVoiceMessagesPendingRoute: ApiVoiceMessagesPendingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

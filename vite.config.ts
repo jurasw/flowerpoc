@@ -11,9 +11,9 @@ const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
     devtools(),
+    tanstackStart(),
     nitro(),
     tailwindcss(),
-    tanstackStart(),
     viteReact(),
   ],
 })
